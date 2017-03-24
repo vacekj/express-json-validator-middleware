@@ -1,0 +1,35 @@
+{
+  "name": "express-json-validator-middleware",
+  "version": "0.0.1",
+  "description": "An Express middleware to validate requests against JSON Schema",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JouzaLoL/express-json-validator-middleware.git"
+  },
+  "keywords": [
+    "express",
+    "json",
+    "validate",
+    "validation",
+    "validator"
+  ],
+  "author": "Josef Vacek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JouzaLoL/express-json-validator-middleware/issues"
+  },
+  "homepage": "https://github.com/JouzaLoL/express-json-validator-middleware#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "express": "^4.15.2",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "ajv": "^4.11.5"
+  }
+}
