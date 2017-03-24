@@ -15,19 +15,26 @@ function validate(options) {
             let valid = validate(req[requestProperty]);
 
             if (!valid) {
-                validationErrors[requestProperty] = valid.errors;
+                validationErrors.push(valid.errors);
             }
         });
 
-        if (Object.keys(validationErrors).length) {
-            next(new ValidationError(validationErrors));
+        if (validationErrors) {
+            next(new ValidationError(localize.en(validate.errors)));
         } else {
             next();
         }
     };
 }
 
-class ValidationError extends Error {};
+class ValidationError extends Error {
+    constructor(validationErrors) {
+        super();
+        this.name = 'JsonSchemaValidation';
+        this.message = 'express-jsonschema: Invalid data found';
+        this.validationErrors = validationErrors;
+    }
+};
 
 module.exports = {
     validate,
