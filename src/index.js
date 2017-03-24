@@ -2,11 +2,12 @@ var Ajv = require('ajv');
 var ajv = new Ajv({
     allErrors: true
 });
+var localize = require('ajv-i18n');
 
 function validate(options) {
 
     return function (req, res, next) {
-        let validationErrors = {};
+        let validationErrors = [];
 
         Object.keys(options).forEach(function (requestProperty) {
             let schema = options[requestProperty];
