@@ -2,37 +2,55 @@ var Ajv = require('ajv');
 var ajv = new Ajv({
     allErrors: true
 });
-var localize = require('ajv-i18n');
 
+
+/**
+ * Express middleware for validating requests
+ *
+ * @param {Object} options
+ * @returns
+ */
 function validate(options) {
-
     return function (req, res, next) {
-        let validationErrors = [];
+        var validationErrors = {};
 
         Object.keys(options).forEach(function (requestProperty) {
             let schema = options[requestProperty];
-            let validate = ajv.compile(schema);
+            let validateFunction = ajv.compile(schema);
 
-            let valid = validate(req[requestProperty]);
+            var valid = validateFunction(req[requestProperty]);
 
             if (!valid) {
-                validationErrors.push(valid.errors);
+                validationErrors[requestProperty] = validateFunction.errors;
             }
         });
 
-        if (validationErrors) {
-            next(new ValidationError(localize.en(validate.errors)));
+        if (Object.keys(validationErrors).length != 0) {
+            next(new ValidationError(validationErrors));
         } else {
             next();
         }
     };
 }
 
+
+/**
+ * Validation Error
+ *
+ * @class ValidationError
+ * @extends {Error}
+ */
 class ValidationError extends Error {
+
+    /**
+     * Creates an instance of ValidationError.
+     * @param {any} validationErrors
+     *
+     * @memberOf ValidationError
+     */
     constructor(validationErrors) {
         super();
-        this.name = 'JsonSchemaValidation';
-        this.message = 'express-jsonschema: Invalid data found';
+        this.name = 'JsonSchemaValidationError';
         this.validationErrors = validationErrors;
     }
 };

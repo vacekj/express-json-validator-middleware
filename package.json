@@ -1,7 +1,7 @@
 {
   "name": "express-json-validator-middleware",
   "version": "0.0.5",
-  "description": "An Express middleware to validate requests against JSON Schema",
+  "description": "An Express middleware to validate requests against JSON Schemas",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha"
