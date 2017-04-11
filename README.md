@@ -95,14 +95,10 @@ A valid request would now also require a url like `/street/?token=F42G5N5BGC`.
 ## More documentation on JSON schemas
 
 - [scpacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
-- [jsonschema][jsonschema-url]
-- [json-schema.org][json-schema-url]
-- [json schema generator](http://jsonschema.net/)
-- [json schema google group](https://groups.google.com/forum/#!forum/json-schema)
 
 ## Notes
 
-In express-jsonschema, you could define a required property in two ways. Ajv only supports the first latter
+In express-jsonschema, you could define a required property in two ways. Ajv only supports the latter
 
 ```js
 // WRONG
