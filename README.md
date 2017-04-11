@@ -128,5 +128,3 @@ In express-jsonschema, you could define a required property in two ways. Ajv onl
     }
 }
 ```
-
-Huge thanks to 
