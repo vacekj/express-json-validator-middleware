@@ -2,12 +2,18 @@
 [express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
 **WIP - suggestions / bug reports are welcome!**
+=======
+[![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+
 
 Based heavily on https://github.com/trainiac/express-jsonschema.
 
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
 
 - **Performance** -  Uses [ajv](https://github.com/epoberezkin/ajv) instead of [JSONSchema](https://github.com/tdegrunt/jsonschema), performing 80% better than [express-jsonschema](https://github.com/trainiac/express-jsonschema)
+- **Newer JSON Schemas Standard** - [ajv](https://github.com/epoberezkin/ajv) supports version 5 (v5) of JSON Schema Standard
 
 ## Why validate with JSON schemas?
 
