@@ -1,37 +1,40 @@
 var Ajv = require('ajv');
-var ajv = new Ajv({
-    allErrors: true
-});
 
+class Validator {
+    constructor(options) {
+        this.ajv = new Ajv(options);
+    }
+    /**
+     * Express middleware for validating requests
+     *
+     * @param {Object} options
+     * @returns
+     */
+    validate(options) {
+        var that = this;
+        return function (req, res, next) {
+            var validationErrors = {};
 
-/**
- * Express middleware for validating requests
- *
- * @param {Object} options
- * @returns
- */
-function validate(options) {
-    return function (req, res, next) {
-        var validationErrors = {};
+            Object.keys(options).forEach(function (requestProperty) {
+                let schema = options[requestProperty];
+                let validateFunction = that.ajv.compile(schema);
 
-        Object.keys(options).forEach(function (requestProperty) {
-            let schema = options[requestProperty];
-            let validateFunction = ajv.compile(schema);
+                var valid = validateFunction(req[requestProperty]);
 
-            var valid = validateFunction(req[requestProperty]);
+                if (!valid) {
+                    validationErrors[requestProperty] = validateFunction.errors;
+                }
+            });
 
-            if (!valid) {
-                validationErrors[requestProperty] = validateFunction.errors;
+            if (Object.keys(validationErrors).length != 0) {
+                next(new ValidationError(validationErrors));
+            } else {
+                next();
             }
-        });
-
-        if (Object.keys(validationErrors).length != 0) {
-            next(new ValidationError(validationErrors));
-        } else {
-            next();
-        }
-    };
+        };
+    }
 }
+
 
 
 /**
@@ -56,6 +59,6 @@ class ValidationError extends Error {
 };
 
 module.exports = {
-    validate,
+    Validator,
     ValidationError
 };
