@@ -1,11 +1,12 @@
 # express-json-validator-middleware
 [express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
+**WIP - suggestions / bug reports are welcome!**
+=======
 [![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 
-***WIP - suggestions / bug reports are welcome!***
 
 Based heavily on https://github.com/trainiac/express-jsonschema.
 
@@ -17,7 +18,7 @@ Based heavily on https://github.com/trainiac/express-jsonschema.
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
-- **Standard** - JSON schemas are not specific to Javascript. They are used in many server side languages. The standard specification lives here [json-schema.org][json-schema-url].
+- **Standard** - JSON schemas are not specific to Javascript. They are used in many server side languages.
 - **Fail-Fast** - Validating a payload before handing it to your application code will catch errors early that would otherwise lead to more confusing errors later.
 - **Separate Validation** - Manually inspecting a payload for errors can get lengthy and clutter up your application code.
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
@@ -26,7 +27,7 @@ Based heavily on https://github.com/trainiac/express-jsonschema.
 ## Installation
 
 ```sh
-$ npm install express-json-validator-middleware
+$ npm install express-json-validator-middleware --save-dev
 ```
 
 ## Example
