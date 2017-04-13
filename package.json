@@ -4,7 +4,8 @@
   "description": "An Express middleware to validate requests against JSON Schemas",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "coveralls": "nyc mocha && nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
+    "coveralls": "^2.13.0",
     "express": "^4.15.2",
     "mocha": "^3.2.0"
   },
