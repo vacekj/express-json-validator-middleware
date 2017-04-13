@@ -11,20 +11,20 @@ class Validator {
      * @returns
      */
     validate(options) {
-        var that = this;
+        var self = this;
         return function (req, res, next) {
             var validationErrors = {};
 
             Object.keys(options).forEach(function (requestProperty) {
                 let schema = options[requestProperty];
-                let validateFunction = that.ajv.compile(schema);
+                let validateFunction = this.ajv.compile(schema);
 
                 var valid = validateFunction(req[requestProperty]);
 
                 if (!valid) {
                     validationErrors[requestProperty] = validateFunction.errors;
                 }
-            });
+            }, self);
 
             if (Object.keys(validationErrors).length != 0) {
                 next(new ValidationError(validationErrors));
