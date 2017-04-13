@@ -4,7 +4,7 @@ const {
     ValidationError
 } = require('../src');
 
-describe('Middleware', () => {
+describe('Simulated Middleware', () => {
     describe('Basic Use Case', () => {
         const middleware = new Validator().validate({
             body: {

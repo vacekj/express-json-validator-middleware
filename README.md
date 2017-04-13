@@ -180,7 +180,6 @@ npm install
 npm test
 ```
 
-Tests include an independent validation test and a simulated Express middleware test.
 
 ## More documentation on JSON schemas
 
