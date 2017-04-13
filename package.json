@@ -4,8 +4,7 @@
   "description": "An Express middleware to validate requests against JSON Schemas",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha",
-    "report-coverage": "nyc report --reporter=text-lcov mocha > coverage.lcov && codecov"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

@@ -3,4 +3,6 @@ node_js:
   - "7"
 after_success:
   - 'npm i -g codecov'
-  - 'npm run report-coverage'
+  - 'nyc mocha'
+  - 'nyc report --reporter=lcov'
+  - 'cat ./coverage/lcov.info > coverage.lcov'
