@@ -6,3 +6,4 @@ after_success:
   - 'nyc mocha'
   - 'nyc report --reporter=lcov'
   - 'cat ./coverage/lcov.info > coverage.lcov'
+  - 'codecov'
