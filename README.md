@@ -94,7 +94,7 @@ var bodyParser = require('body-parser');
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
-// Define a shortcut. It is perfectly okay ot use validator.validate()
+// Define a shortcut. It is perfectly okay to use validator.validate() as middleware
 var validate = validator.validate.bind(validator);
 
 // Define a JSON Schema
