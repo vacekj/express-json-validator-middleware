@@ -2,5 +2,4 @@ language: node_js
 node_js:
   - "7"
 after_success:
-  - 'npm run coveralls'
-  - 'cat ./coverage/lcov.info | ./node_modules/.bin/coveralls'
+  - 'npm run report-coverage'
