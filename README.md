@@ -170,7 +170,7 @@ The Ajv instance can be accessed via validator.ajv.
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 var validator = new Validator({allErrors: true});
 
-validator.ajv //
+validator.ajv // ajv instance
 ```
 
 ## Tests
