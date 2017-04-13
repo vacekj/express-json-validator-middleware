@@ -146,9 +146,37 @@ app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), functio
 
 A valid request must now include a token URL query. Example valid URL: ```/street/?token=F42G5N5BGC```
 
-## Tests
+## Custom keywords
+
+Ajv supports custom keywords out of the box. They must be defined only after you initialize a Validator, but before you any validate() middleware. Example:
 
 ```js
+var { Validator, ValidationError } = require('express-json-validator-middleware');
+var validator = new Validator({allErrors: true});
+
+validator.ajv.addKeyword('constant', { validate: function (schema, data) {
+  return typeof schema == 'object' && schema !== null
+          ? deepEqual(schema, data)
+          : schema === data;
+}, errors: false });
+```
+
+More info on custom keywords: [ajv#customs-keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md#defining-custom-keywords)
+
+## Ajv instance
+The Ajv instance can be accessed via validator.ajv.
+
+```js
+var { Validator, ValidationError } = require('express-json-validator-middleware');
+var validator = new Validator({allErrors: true});
+
+validator.ajv //
+```
+
+## Tests
+
+```
+npm install
 npm test
 ```
 
@@ -156,7 +184,7 @@ Tests include an independent validation test and a simulated Express middleware 
 
 ## More documentation on JSON schemas
 
-- [scpacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
+- [spacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
 
 ## Notes
 
