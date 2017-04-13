@@ -1,6 +1,7 @@
 # express-json-validator-middleware
 [express.js](https://github.com/visionmedia/express) middleware for JSON schema validation.
 
+[![Build Status](https://travis-ci.org/JouzaLoL/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/JouzaLoL/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
@@ -93,7 +94,7 @@ var bodyParser = require('body-parser');
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
-// Define a shortcut. It is perfectly okay ot use validator.validate()
+// Define a shortcut. It is perfectly okay to use validator.validate() as middleware
 var validate = validator.validate.bind(validator);
 
 // Define a JSON Schema
