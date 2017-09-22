@@ -7,14 +7,12 @@
 [![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 
-This package is a work in progress - feedback is heavily appreciated
-
 Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you to @trainiac for the original package!
 
-## Why use this library instead of [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
+## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
 
-- **Performance** -  We use [ajv](https://github.com/epoberezkin/ajv) instead of [JSONSchema](https://github.com/tdegrunt/jsonschema), offering a significant performance boost.
-- **Newer JSON Schema Standard** - Using [ajv](https://github.com/epoberezkin/ajv) under the hood allows us to support JSON Schema v5 proposal.
+- **Performance** - [ajv](https://github.com/epoberezkin/ajv) offers a significant performance boost over [JSONSchema](https://github.com/tdegrunt/jsonschema), 
+- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v5 proposal.
 - **Active Maintenance** - ```express-json-validator-middleware``` is being actively maintained by @JouzaLoL
 
 ## Why validate with JSON schemas?
@@ -29,8 +27,10 @@ Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you
 ## Installation
 
 ```sh
-$ npm install express-json-validator-middleware --save-dev
+$ npm install express-json-validator-middleware
 ```
+
+```--save``` is no longer necessary as of ```npm@5```
 
 ## Getting started
 
@@ -40,7 +40,8 @@ $ npm install express-json-validator-middleware --save-dev
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 ```
 
-2. Initialize a Validator instance, passing in an optional options object for the Ajv instance. Ajv options can be found here: [ajv#options](https://github.com/epoberezkin/ajv#options)
+2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
+
 ```js
 var validator = new Validator({allErrors: true});
 ```
@@ -65,14 +66,12 @@ app.post('/street/', validate({body: BodySchema}), function(req, res) {
 });
 ```
 
-5. The validator will either do nothing, if the data is valid, or call next() with a ValidationError as a parameter, if the data is found to be erroneous.
-
 ## Error handling
 
-On encountering erroneous data, the validator will call next with a ValidationError object.
-It is recommended to setup a general error handler for your express app where you will catch errors of type ValidationError
+On encountering erroneous data, the validator will call next() with a ValidationError object.
+It is recommended to setup a general error handler for your app where you will catch ValidationError errors
 
-Error example (pseudocode):
+Example - error thrown for the `body` request property
 
 ```js
 ValidationError {
@@ -83,7 +82,7 @@ ValidationError {
 }
 ```
 
-Information on Ajv errors can be found here: [ajv#errors](https://github.com/epoberezkin/ajv#validation-errors)
+More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-errors)
 
 ## Example Express app
 
@@ -95,7 +94,7 @@ var bodyParser = require('body-parser');
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
-// Define a shortcut. It is perfectly okay to use validator.validate() as middleware
+// Define a shortcut. It is perfectly okay to use validator.validate() as middleware, this just makes it easier
 var validate = validator.validate.bind(validator);
 
 // Define a JSON Schema
@@ -150,7 +149,9 @@ A valid request must now include a token URL query. Example valid URL: ```/stree
 
 ## Custom keywords
 
-Ajv supports custom keywords out of the box. They must be defined only after you initialize a Validator, but before you any validate() middleware. Example:
+Ajv custom keywords must be defined *before* any validate() middleware
+
+Example:
 
 ```js
 var { Validator, ValidationError } = require('express-json-validator-middleware');
@@ -161,6 +162,8 @@ validator.ajv.addKeyword('constant', { validate: function (schema, data) {
           ? deepEqual(schema, data)
           : schema === data;
 }, errors: false });
+
+// free to use validate() here
 ```
 
 More info on custom keywords: [ajv#customs-keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md#defining-custom-keywords)
@@ -189,9 +192,21 @@ npm test
 
 ## Notes
 
-In ```express-jsonschema```, you could define a required property in two ways. Ajv only supports the latter.
+In ```express-jsonschema```, you could define a required property in two ways. Ajv only supports one way of doing this.
 
 ```js
+
+// CORRECT
+{
+    type: 'object',
+    properties: {
+        foo: {
+            type: 'string'
+        },
+        required: ['foo']
+    }
+}
+
 // WRONG
 {
     type: 'object',
@@ -200,18 +215,6 @@ In ```express-jsonschema```, you could define a required property in two ways. A
             type: 'string',
             required: true
         }
-    }
-}
-
-// CORRECT
-
-{
-    type: 'object',
-    properties: {
-        foo: {
-            type: 'string'
-        },
-        required: ['foo']
     }
 }
 ```
