@@ -1,5 +1,5 @@
 # express-json-validator-middleware
-[express.js](https://github.com/visionmedia/express) middleware for JSON schema validation.
+[express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
 
 [![Build Status](https://travis-ci.org/JouzaLoL/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/JouzaLoL/express-json-validator-middleware)
 [![codecov](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware)
