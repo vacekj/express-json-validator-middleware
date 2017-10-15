@@ -9,6 +9,8 @@
 
 Coming from `express-jsonschema`? Read our [migration notes](#migrating)
 
+Starting with `1.1.0`, this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
+
 Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you to @trainiac for the original package!
 
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
