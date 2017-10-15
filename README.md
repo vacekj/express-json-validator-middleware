@@ -7,6 +7,8 @@
 [![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 
+Coming from `express-jsonschema`? Read our [migration notes](#migrating)
+
 Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you to @trainiac for the original package!
 
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
@@ -190,9 +192,9 @@ npm test
 
 - [spacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
 
-## Notes
+## <a name="migrating"></a> Migrating from `express-jsonschema`
 
-In ```express-jsonschema```, you could define a required property in two ways. Ajv only supports one way of doing this.
+In `express-jsonschema`, you could define a required property in two ways. Ajv only supports one way of doing this.
 
 ```js
 
@@ -203,7 +205,7 @@ In ```express-jsonschema```, you could define a required property in two ways. A
         foo: {
             type: 'string'
         },
-        required: ['foo']
+        required: ['foo'] <--
     }
 }
 
@@ -213,7 +215,7 @@ In ```express-jsonschema```, you could define a required property in two ways. A
     properties: {
         foo: {
             type: 'string',
-            required: true
+            required: true 
         }
     }
 }
