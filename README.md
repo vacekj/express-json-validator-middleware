@@ -16,8 +16,8 @@ Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
 
 - **Performance** - [ajv](https://github.com/epoberezkin/ajv) offers a significant performance boost over [JSONSchema](https://github.com/tdegrunt/jsonschema), 
-- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v5 proposal.
-- **Active Maintenance** - ```express-json-validator-middleware``` is being actively maintained by @JouzaLoL
+- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v6 proposal.
+- **Active Maintenance** - `express-json-validator-middleware` is being actively maintained by @JouzaLoL
 
 ## Why validate with JSON schemas?
 
@@ -34,7 +34,7 @@ Based heavily on https://github.com/trainiac/express-jsonschema. A big thank you
 $ npm install express-json-validator-middleware
 ```
 
-```--save``` is no longer necessary as of ```npm@5```
+`--save` is no longer necessary as of `npm@5`
 
 ## Getting started
 
@@ -50,7 +50,7 @@ var { Validator, ValidationError } = require('express-json-validator-middleware'
 var validator = new Validator({allErrors: true});
 ```
 
-3. *Optional* - Define a shortcut function. Bind is necessary here in order to pass ```this``` correctly
+3. *Optional* - Define a shortcut function. Bind is necessary here in order to pass `this` correctly
 ```js
 var validate = validator.validate.bind(validator);
 ```
@@ -149,7 +149,7 @@ app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), functio
 });
 ```
 
-A valid request must now include a token URL query. Example valid URL: ```/street/?token=F42G5N5BGC```
+A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
 
 ## Custom keywords
 
