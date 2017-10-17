@@ -1,5 +1,5 @@
 var Ajv = require('ajv');
-
+// trigger build
 class Validator {
     constructor(options) {
         this.ajv = new Ajv(options);
