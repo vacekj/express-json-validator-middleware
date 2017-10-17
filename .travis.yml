@@ -1,9 +1,13 @@
 language: node_js
 node_js:
-  - "7"
+  - "node"
 after_success:
   - 'npm i -g codecov'
   - 'nyc mocha'
   - 'nyc report --reporter=lcov'
   - 'cat ./coverage/lcov.info > coverage.lcov'
   - 'codecov'
+
+branches:
+  only:
+  - master
