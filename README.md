@@ -183,6 +183,7 @@ validator.ajv // ajv instance
 ```
 
 ## Tests
+Tests are written using Mocha
 
 ```
 npm install
