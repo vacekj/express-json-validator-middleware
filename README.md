@@ -104,7 +104,7 @@ var validate = validator.validate.bind(validator);
 // Define a JSON Schema
 var StreetSchema = {
     type: 'object',
-    required: ['number, name, type'],
+    required: ['number', 'name', 'type'],
     properties: {
         number: {
             type: 'number'
