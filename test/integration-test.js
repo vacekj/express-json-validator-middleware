@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 var validator = new Validator({
     allErrors: true
 });
-var validate = validator.validate.bind(validator);
+var validate = validator.validate;
 
 var personSchema = {
     properties: {

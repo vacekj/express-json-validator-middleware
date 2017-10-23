@@ -50,9 +50,9 @@ var { Validator, ValidationError } = require('express-json-validator-middleware'
 var validator = new Validator({allErrors: true});
 ```
 
-3. *Optional* - Define a shortcut function. Bind is necessary here in order to pass `this` correctly
+3. *Optional* - Define a shortcut function.
 ```js
-var validate = validator.validate.bind(validator);
+var validate = validator.validate;
 ```
 
 4. Use the function as an Express middleware, passing in an options object of the following format:
@@ -96,10 +96,12 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var { Validator, ValidationError } = require('express-json-validator-middleware');
+
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
+
 // Define a shortcut. It is perfectly okay to use validator.validate() as middleware, this just makes it easier
-var validate = validator.validate.bind(validator);
+var validate = validator.validate;
 
 // Define a JSON Schema
 var StreetSchema = {
@@ -167,7 +169,7 @@ validator.ajv.addKeyword('constant', { validate: function (schema, data) {
           : schema === data;
 }, errors: false });
 
-// free to use validate() here
+// free to validator in middleware now
 ```
 
 More info on custom keywords: [ajv#customs-keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md#defining-custom-keywords)
@@ -208,7 +210,7 @@ In `express-jsonschema`, you could define a required property in two ways. Ajv o
         foo: {
             type: 'string'
         },
-        required: ['foo'] <--
+        required: ['foo'] // <-- correct way
     }
 }
 
@@ -218,7 +220,7 @@ In `express-jsonschema`, you could define a required property in two ways. Ajv o
     properties: {
         foo: {
             type: 'string',
-            required: true 
+            required: true // nono way
         }
     }
 }
