@@ -20,7 +20,7 @@ class Validator {
 				let schema = options[requestProperty];
 				let validateFunction = this.ajv.compile(schema);
 
-				var valid = validateFunction(req[requestProperty]);
+				let valid = validateFunction(req[requestProperty]);
 
 				if (!valid) {
 					validationErrors[requestProperty] = validateFunction.errors;
