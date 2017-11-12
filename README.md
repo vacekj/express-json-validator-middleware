@@ -130,7 +130,7 @@ app.post('/street/', validate({body: StreetSchema}), function(req, res) {
 
 ## Validating multiple request properties
 
-Sometimes your route may depend on the `body` and `query` both having a specific format.  In this example I use `body` and `query` but you can choose to validate any `request` properties you'd like. 
+Sometimes your route may depend on the `body` and `query` both having a specific format.  In this example we use `body` and `query` but you can choose to validate any `request` properties you like. 
 
 ```js
 var TokenSchema = {
@@ -138,7 +138,7 @@ var TokenSchema = {
     required: ['token'] // req.query.token is required
     properties: {
         token: { // validate token
-            type: 'string',
+            type: 'string', 
             format: 'alphanumeric',
             minLength: 10,
             maxLength: 10
@@ -169,7 +169,7 @@ validator.ajv.addKeyword('constant', { validate: function (schema, data) {
           : schema === data;
 }, errors: false });
 
-// free to validator in middleware now
+// route handlers with validate()
 ```
 
 More info on custom keywords: [ajv#customs-keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md#defining-custom-keywords)
