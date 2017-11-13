@@ -2,8 +2,7 @@ const chai = require('chai');
 chai.use(require('chai-http'));
 const expect = require('chai').expect;
 const {
-    Validator,
-    ValidationError
+    Validator
 } = require('../src');
 
 var express = require('express');
@@ -44,7 +43,8 @@ describe('Integration', () => {
         it('should return a ValidationError on bad data', (done) => {
             let badJson = {
                 name: 10
-            }
+			};
+			
             chai.request(app)
                 .post('/street')
                 .send(badJson)
