@@ -1,0 +1,31 @@
+{
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"extends": [
+		"google",
+		"eslint:recommended"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2017,
+		"node": true
+	},
+	"rules": {
+		"no-undef": "error",
+		"space-before-function-paren": "off",
+		"eol-last": "off",
+		"no-var": "off",
+		"comma-dangle": "off",
+		"new-cap": "off",
+		"max-len": "off",
+		"valid-jsdoc": "off",
+		"quotes": "off",
+		"no-shadow": "error",
+		"object-curly-spacing": "off",
+		"no-invalid-this": "off",
+		"no-constant-condition": "off",
+		"no-console": "off",
+		"semi": "error"
+	}
+}

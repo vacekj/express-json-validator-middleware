@@ -33,7 +33,7 @@ class Validator {
 					validationErrors[requestProperty] = validateFunction.errors;
 				}
 			}, self);
-			
+
 			if (Object.keys(validationErrors).length != 0) {
 				next(new ValidationError(validationErrors));
 			} else {
@@ -42,8 +42,6 @@ class Validator {
 		};
 	}
 }
-
-
 
 /**
  * Validation Error
@@ -57,8 +55,7 @@ class ValidationError extends Error {
 		this.name = 'JsonSchemaValidationError';
 		this.validationErrors = validationErrors;
 	}
-};
-
+}
 
 module.exports = {
 	Validator,
