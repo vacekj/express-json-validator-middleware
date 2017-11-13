@@ -21,7 +21,7 @@ lib-cov
 coverage
 
 # manually created coverage file
-coverage.lcov
+./coverage.lcov
 
 # nyc test coverage
 .nyc_output
