@@ -45,8 +45,6 @@ class Validator {
 	}
 }
 
-
-
 /**
  * Validation Error
  * 
@@ -59,8 +57,7 @@ class ValidationError extends Error {
 		this.name = 'JsonSchemaValidationError';
 		this.validationErrors = validationErrors;
 	}
-};
-
+}
 
 module.exports = {
 	Validator,
