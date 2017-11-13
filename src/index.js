@@ -19,20 +19,22 @@ class Validator {
 	validate(options) {
 		// Self is a reference to the current Validator instance
 		var self = this;
+		const validateFunctions = Object.keys(options).map(function (requestProperty) {
+			let schema = options[requestProperty];
+			let validateFunction = this.ajv.compile(schema);
+			return [requestProperty, validateFunction];
+		}, self);
 
 		// The actual middleware function
 		return function (req, res, next) {
 			var validationErrors = {};
 
-			Object.keys(options).forEach(function (requestProperty) {
-				let schema = options[requestProperty];
-				let validateFunction = this.ajv.compile(schema);
-				let valid = validateFunction(req[requestProperty]);
-
+			for (const [requestProperty, validateFunction] of validateFunctions) {
+				const valid = validateFunction(req[requestProperty]);
 				if (!valid) {
 					validationErrors[requestProperty] = validateFunction.errors;
 				}
-			}, self);
+			}
 
 			if (Object.keys(validationErrors).length != 0) {
 				next(new ValidationError(validationErrors));
