@@ -1,0 +1,8 @@
+# TravisCI configuration file
+.travis.yml	
+
+# ESLint configuration
+.eslintrc.json
+
+# No tests in published code
+test
