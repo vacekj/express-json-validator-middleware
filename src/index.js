@@ -21,15 +21,21 @@ class Validator {
 		var self = this;
 		const validateFunctions = Object.keys(options).map(function (requestProperty) {
 			let schema = options[requestProperty];
+			if (typeof schema === 'function') {
+				return {requestProperty, schemaFunction: schema};
+			}
 			let validateFunction = this.ajv.compile(schema);
-			return [requestProperty, validateFunction];
+			return {requestProperty, validateFunction};
 		}, self);
 
 		// The actual middleware function
-		return function (req, res, next) {
+		return (req, res, next) => {
 			var validationErrors = {};
 
-			for (const [requestProperty, validateFunction] of validateFunctions) {
+			for (let {requestProperty, validateFunction, schemaFunction} of validateFunctions) {
+				if (!validateFunction) {
+					validateFunction = this.ajv.compile(schemaFunction(req));
+				}
 				const valid = validateFunction(req[requestProperty]);
 				if (!valid) {
 					validationErrors[requestProperty] = validateFunction.errors;
