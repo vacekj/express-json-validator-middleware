@@ -151,6 +151,32 @@ app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), functio
 });
 ```
 
+## Using dynamic schema
+
+Instead of passing schema object you can also pass a function that will return a schema. It is 
+useful if you need to generate or alter the schema based of Request object.
+
+Example: loading schema from the database
+
+```js
+function loadSchema(req, res, next) {
+    getSchemaFromDB()
+        .then((schema) => {
+            req.schema = schema;
+            next();
+        })
+        .catch((err) => next(err));
+}
+
+function getSchema(req) {
+    return req.schema || DefaultSchema;
+}
+
+app.post('/street/', loadSchema, validate({body: getSchema}), function(req, res) {
+    // route code
+});
+```
+
 A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
 
 ## Custom keywords
