@@ -38,11 +38,18 @@ $ npm install express-json-validator-middleware
 
 ## Getting started
 
-0. Install the module
 1. Require the module
+
+ES6 style
+```js
+import { Validator, ValidationError } from "express-json-validator-middleware";
+```
+
+or CommonJS style
 ```js
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 ```
+
 
 2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
 
@@ -50,22 +57,22 @@ var { Validator, ValidationError } = require('express-json-validator-middleware'
 var validator = new Validator({allErrors: true});
 ```
 
-3. *Optional* - Define a shortcut function.
+3. *Optional* - Define a bound shortcut function that can be used instead of Validator.validate
 ```js
 var validate = validator.validate;
 ```
 
-4. Use the function as an Express middleware, passing in an options object of the following format:
+4. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
 ```js
-validate({
-    request_property: schema_to_use
+Validator.validate({
+    requestProperty: schemaToUse
 })
 ```
 
-Example: Validate req.body against BodySchema
+Example: Validate `req.body` against `bodySchema`
 
 ```js
-app.post('/street/', validate({body: BodySchema}), function(req, res) {
+app.post('/street/', validate({body: bodySchema}), function(req, res) {
     // route code
 });
 ```
@@ -100,7 +107,7 @@ var { Validator, ValidationError } = require('express-json-validator-middleware'
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
 
-// Define a shortcut. It is perfectly okay to use validator.validate() as middleware, this just makes it easier
+// Define a shortcut function
 var validate = validator.validate;
 
 // Define a JSON Schema
@@ -146,18 +153,22 @@ var TokenSchema = {
     }
 }
 
-app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
+app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
     // application code
 });
+
 ```
+
+A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
 
 ## Using dynamic schema
 
-Instead of passing schema object you can also pass a function that will return a schema. It is 
-useful if you need to generate or alter the schema based of Request object.
+Instead of passing in a schema object you can also pass in a function that will return a schema. It is 
+useful if you need to generate or alter the schema based on the request object.
 
 Example: loading schema from the database
 
+// Middleware executed before validate function
 ```js
 function loadSchema(req, res, next) {
     getSchemaFromDB()
@@ -165,19 +176,19 @@ function loadSchema(req, res, next) {
             req.schema = schema;
             next();
         })
-        .catch((err) => next(err));
+        .catch(next);
 }
 
+// function that returns a schema object
 function getSchema(req) {
+	// return the schema from the previous middleware or the default schema
     return req.schema || DefaultSchema;
 }
 
-app.post('/street/', loadSchema, validate({body: getSchema}), function(req, res) {
+app.post('/street/', loadSchema, Validator.validate({body: getSchema}), function(req, res) {
     // route code
 });
 ```
-
-A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
 
 ## Custom keywords
 
@@ -255,6 +266,4 @@ In `express-jsonschema`, you could define a required property in two ways. Ajv o
 
 - Maintained by [@JouzaLoL](https://github.com/jouzalol)
 - [Original Module](https://github.com/trainiac/express-jsonschema) by [@trainiac](https://github.com/trainiac)
-- PRs: 
-	- [@GochoMugo](https://github.com/GochoMugo)
-	- [@teobaranga](https://github.com/teobaranga)
+- PRs: see Contributors
