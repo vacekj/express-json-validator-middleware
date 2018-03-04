@@ -19,14 +19,16 @@ class Validator {
 	validate(options) {
 		// Self is a reference to the current Validator instance
 		var self = this;
+
+		// Cache validate functions
 		const validateFunctions = Object.keys(options).map(function (requestProperty) {
-			let schema = options[requestProperty];
+			const schema = options[requestProperty];
 			if (typeof schema === 'function') {
 				return {requestProperty, schemaFunction: schema};
 			}
-			let validateFunction = this.ajv.compile(schema);
+			const validateFunction = this.ajv.compile(schema);
 			return {requestProperty, validateFunction};
-		}, self);
+		}, self); 
 
 		// The actual middleware function
 		return (req, res, next) => {
@@ -34,8 +36,12 @@ class Validator {
 
 			for (let {requestProperty, validateFunction, schemaFunction} of validateFunctions) {
 				if (!validateFunction) {
-					validateFunction = this.ajv.compile(schemaFunction(req));
+					// Get the schema from the dynamic schema function
+					const schema = schemaFunction(req);
+					validateFunction = this.ajv.compile(schema);
 				}
+
+				// Test if property is valid
 				const valid = validateFunction(req[requestProperty]);
 				if (!valid) {
 					validationErrors[requestProperty] = validateFunction.errors;

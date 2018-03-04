@@ -4,6 +4,8 @@ const {
 	ValidationError
 } = require('../src');
 
+const ajv = require('ajv');
+
 describe('Simulated Middleware', () => {
 	describe('Basic Use Case', () => {
 		const middleware = new Validator().validate({
@@ -73,6 +75,13 @@ describe('Simulated Middleware', () => {
 				nextCalled = true;
 			})).not.to.throw();
 			expect(nextCalled).to.be.true;
+		});
+	});
+
+	describe('Validator instance', () => {
+		it('should be able to acesss ajv instance at Validator.ajv', () => {
+			expect(new Validator()).to.haveOwnProperty("ajv");
+			expect(new Validator().ajv).to.be.an.instanceof(ajv);
 		});
 	});
 });

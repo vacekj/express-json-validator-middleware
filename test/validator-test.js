@@ -3,7 +3,7 @@ const {
     Validator
 } = require('../src');
 
-describe('Validator', () => {
+describe('Ajv', () => {
 	describe('Basic Validation', () => {
 		const SCHEMA = {
 			properties: {
@@ -53,13 +53,13 @@ describe('Validator', () => {
 
 		const validate = new Validator().ajv.compile(SCHEMA);
 
-		it('Rejects bad data', () => {
+		it('should reject bad data', () => {
 			let validated = validate(BAD_DATA);
 			expect(validated).to.be.false;
 			expect(validate.errors).to.have.length;
 		});
 
-		it('Approves good data', () => {
+		it('should approve good data', () => {
 			let validated = validate(GOOD_DATA);
 			expect(validated).to.be.true;
 		});
