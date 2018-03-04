@@ -39,17 +39,9 @@ $ npm install express-json-validator-middleware
 ## Getting started
 
 1. Require the module
-
-ES6 style
-```js
-import { Validator, ValidationError } from "express-json-validator-middleware";
-```
-
-or CommonJS style
 ```js
 var { Validator, ValidationError } = require('express-json-validator-middleware');
 ```
-
 
 2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
 
