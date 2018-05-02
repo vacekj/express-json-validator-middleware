@@ -237,9 +237,9 @@ In `express-jsonschema`, you could define a required property in two ways. Ajv o
     properties: {
         foo: {
             type: 'string'
-        },
-        required: ['foo'] // <-- correct way
-    }
+        }
+    },
+    required: ['foo'] // <-- correct way
 }
 
 // WRONG
