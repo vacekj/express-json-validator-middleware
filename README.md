@@ -91,10 +91,10 @@ More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-e
 
 ```js
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
 
 var { Validator, ValidationError } = require('express-json-validator-middleware');
+
 
 // Initialize a Validator instance first
 var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
@@ -120,10 +120,26 @@ var StreetSchema = {
     }
 }
 
+
+var app = express();
+
+app.use(bodyParser.json());
+
 // This route validates req.body against the StreetSchema
 app.post('/street/', validate({body: StreetSchema}), function(req, res) {
     // At this point req.body has been validated and you can
     // begin to execute your application code
+    res.send('valid');
+});
+
+// Error handler for valication errors
+app.use(function(err, req, res, next) {
+    if (err instanceof ValidationError) {
+        // At this point you can execute your error handling code
+        res.status(400).send('invalid');
+        next();
+    }
+    else next(err); // pass error on if not a validation error
 });
 ```
 
