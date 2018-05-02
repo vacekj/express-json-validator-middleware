@@ -54,7 +54,7 @@ var validator = new Validator({allErrors: true});
 var validate = validator.validate;
 ```
 
-5. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
+4. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
 ```js
 Validator.validate({
     requestProperty: schemaToUse
