@@ -42,15 +42,15 @@ describe('Integration', () => {
     describe('Basic Use Case', () => {
         it('should return a ValidationError on bad data', (done) => {
             let badJson = {
-                name: 10
+                name: null
 			};
 			
             chai.request(app)
                 .post('/street')
                 .send(badJson)
                 .end((err, res) => {
-                    expect(err).to.not.be.null;
-                    expect(err).to.have.status(400);
+                    expect(res.error).to.not.be.null;
+                    expect(res.error).to.have.status(400);
                     expect(res.body.name).to.equal('JsonSchemaValidationError');
                     done();
                 });
