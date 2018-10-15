@@ -11,23 +11,21 @@ import {
 } from 'ajv';
 
 declare module 'express-json-validator-middleware' {
-  type ValidateFunction = Function | JSONSchema4 | JSONSchema6 | JSONSchema7
+  type OptionKey = 'body' | 'params';
+  
+  type List<T> = {
+    [K in OptionKey]?: T;
+  } 
 
-  interface ValidationErrors {
-    [key: string]: ErrorObject;
-  }
+  export type ValidateFunction = Function | JSONSchema4 | JSONSchema6 | JSONSchema7
 
-  class Validator {
+  export class Validator {
     constructor(options: AjvOptions);
     
-    validate(options: Options): RequestHandler;
+    validate(options: List<ValidateFunction>): RequestHandler;
   }
 
-  interface Options {
-    [key: string]: ValidateFunction;
-  }
-
-  class ValidationError extends Error {
-    public validationErrors: ValidationErrors;
+  export class ValidationError extends Error {
+    public validationErrors: List<ErrorObject>;
   }
 }
