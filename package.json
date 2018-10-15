@@ -1,6 +1,6 @@
 {
 	"name": "express-json-validator-middleware",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "An Express middleware to validate requests against JSON Schemas",
 	"main": "src/index.js",
 	"scripts": {
@@ -14,6 +14,7 @@
 		"type": "git",
 		"url": "git+https://github.com/JouzaLoL/express-json-validator-middleware.git"
 	},
+	"types": "src/index.d.ts",
 	"keywords": [
 		"express",
 		"json",
@@ -27,6 +28,11 @@
 		"url": "https://github.com/JouzaLoL/express-json-validator-middleware/issues"
 	},
 	"homepage": "https://github.com/JouzaLoL/express-json-validator-middleware#readme",
+	"peerDependencies": {
+		"express": "^4.16.2",
+		"express-serve-static-core": "^0.1.1",
+		"json-schema": "^0.2.3"
+	},
 	"devDependencies": {
 		"body-parser": "^1.17.1",
 		"chai": "^3.5.0",
