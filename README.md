@@ -150,7 +150,7 @@ Sometimes your route may depend on the `body` and `query` both having a specific
 ```js
 var TokenSchema = {
     type: 'object', // req.query is of type object
-    required: ['token'] // req.query.token is required
+    required: ['token'], // req.query.token is required
     properties: {
         token: { // validate token
             type: 'string', 
