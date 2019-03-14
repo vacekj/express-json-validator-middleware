@@ -11,10 +11,10 @@
 
 Coming from `express-jsonschema`? Read our [migration notes](#migrating)
 
-Starting with `1.1.0`, this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
+Major version `1.x` of this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
 
-Version `2.0.0` uses `ajv@6` in order to support draft-07 of JSON Schema.
-Please keep in mind that you have to configure ajv to support **draft-06** schema files from then on (see https://github.com/epoberezkin/ajv#using-version-6).
+Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
+Please keep in mind that you have to manually configure ajv to support **draft-06** schema files from now on (see https://github.com/epoberezkin/ajv#using-version-6).
 
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
 
