@@ -156,11 +156,11 @@ var TokenSchema = {
     type: 'object', // req.query is of type object
     required: ['token'], // req.query.token is required
     properties: {
-        token: { // validate token
+        uuid: { // validate token
             type: 'string', 
-            format: 'alphanumeric',
-            minLength: 10,
-            maxLength: 10
+            format: 'uuid',
+            minLength: 36,
+            maxLength: 36
         }
     }
 }
@@ -171,7 +171,7 @@ app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}
 
 ```
 
-A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
+A valid request must now include a token URL query. Example valid URL: `/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
 
 ## Using dynamic schema
 
