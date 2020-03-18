@@ -27,6 +27,8 @@
 		"no-invalid-this": "off",
 		"no-constant-condition": "off",
 		"no-console": "off",
-		"semi": "error"
+		"semi": "error",
+		"no-tabs": "off",
+		"require-jsdoc": "off"
 	}
 }
