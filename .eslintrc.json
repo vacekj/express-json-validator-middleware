@@ -29,6 +29,8 @@
 		"no-console": "off",
 		"semi": "error",
 		"no-tabs": "off",
-		"require-jsdoc": "off"
+		"require-jsdoc": "off",
+		"linebreak-style": "off",
+		"arrow-parens": "off"
 	}
 }

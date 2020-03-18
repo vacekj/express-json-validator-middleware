@@ -6,7 +6,6 @@
 	"scripts": {
 		"test": "mocha",
 		"lint": "eslint \"src/*.js\" --fix",
-		"precommit": "npm run lint && npm run test",
 		"prepush": "npm run lint && npm run test",
 		"prepublish": "npm run lint && npm run test"
 	},
@@ -41,11 +40,21 @@
 		"eslint-config-google": "^0.9.1",
 		"express": "^4.16.4",
 		"husky": "^0.14.3",
+		"lint-staged": "^10.0.8",
 		"mocha": "^7.1.1",
 		"nyc": "^15.0.0",
 		"prettier": "^1.19.1"
 	},
 	"dependencies": {
 		"ajv": "^6.6.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.js": "eslint --cache --fix",
+		"*.{js,css,md}": "prettier --write"
 	}
 }
