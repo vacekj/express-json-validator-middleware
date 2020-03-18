@@ -1,6 +1,7 @@
 # express-json-validator-middleware
 [express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
 
+<a href="https://www.patreon.com/bePatron?u=19773095" data-patreon-widget-type="become-patron-button"><img src="patreon.png"></img></a>
 [![Build Status](https://travis-ci.org/JouzaLoL/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/JouzaLoL/express-json-validator-middleware)
 [![codecov](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
@@ -11,12 +12,15 @@
 
 Coming from `express-jsonschema`? Read our [migration notes](#migrating)
 
-Starting with `1.1.0`, this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
+Major version `1.x` of this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
+
+Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
+Please keep in mind that you have to manually configure ajv to support **draft-06** schema files from now on (see https://github.com/epoberezkin/ajv#using-version-6).
 
 ## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
 
 - **Performance** - [ajv](https://github.com/epoberezkin/ajv) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
-- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v6 proposal.
+- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v7 proposal.
 - **Active Maintenance** - `express-json-validator-middleware` is being actively maintained.
 
 ## Why validate with JSON schemas?
@@ -150,13 +154,13 @@ Sometimes your route may depend on the `body` and `query` both having a specific
 ```js
 var TokenSchema = {
     type: 'object', // req.query is of type object
-    required: ['token'] // req.query.token is required
+    required: ['token'], // req.query.token is required
     properties: {
-        token: { // validate token
+        uuid: { // validate token
             type: 'string', 
-            format: 'alphanumeric',
-            minLength: 10,
-            maxLength: 10
+            format: 'uuid',
+            minLength: 36,
+            maxLength: 36
         }
     }
 }
@@ -167,7 +171,7 @@ app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}
 
 ```
 
-A valid request must now include a token URL query. Example valid URL: `/street/?token=F42G5N5BGC`
+A valid request must now include a token URL query. Example valid URL: `/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
 
 ## Using dynamic schema
 
