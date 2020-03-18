@@ -3,17 +3,8 @@
 	"version": "2.0.0",
 	"description": "An Express middleware to validate requests against JSON Schemas",
 	"main": "src/index.js",
-	"scripts": {
-		"test": "mocha",
-		"lint": "eslint \"src/*.js\" --fix",
-		"prepush": "npm run lint && npm run test",
-		"prepublish": "npm run lint && npm run test"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/JouzaLoL/express-json-validator-middleware.git"
-	},
-	"types": "src/index.d.ts",
+	"author": "Josef Vacek",
+	"license": "MIT",
 	"keywords": [
 		"express",
 		"json",
@@ -21,12 +12,24 @@
 		"validation",
 		"validator"
 	],
-	"author": "Josef Vacek",
-	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JouzaLoL/express-json-validator-middleware.git"
+	},
 	"bugs": {
 		"url": "https://github.com/JouzaLoL/express-json-validator-middleware/issues"
 	},
 	"homepage": "https://github.com/JouzaLoL/express-json-validator-middleware#readme",
+	"scripts": {
+		"test": "mocha",
+		"lint": "eslint \"src/*.js\" --fix",
+		"prepush": "npm run lint && npm run test",
+		"prepublish": "npm run lint && npm run test"
+	},
+	"types": "src/index.d.ts",
+	"mocha": {
+		"timeout": 15000
+	},
 	"peerDependencies": {
 		"express": "^4.16.2",
 		"express-serve-static-core": "^0.1.1",
