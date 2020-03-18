@@ -1,8 +1,8 @@
-var Ajv = require('ajv');
+var Ajv = require("ajv");
 
 /**
  * Express middleware for validating requests
- * 
+ *
  * @class Validator
  */
 class Validator {
@@ -10,31 +10,40 @@ class Validator {
 		this.ajv = new Ajv(ajvOptions);
 		this.validate = this.validate.bind(this);
 	}
-    /**
-     * Validator method to be used as middleware
-     * 
-     * @param {Object} options Options in format { request_property: schema }
-     * @returns 
-     */
+
+	/**
+	 * Validator method to be used as middleware
+	 *
+	 * @param {Object} options Options in format { request_property: schema }
+	 * @returns
+	 */
 	validate(options) {
 		// Self is a reference to the current Validator instance
-		var self = this;
+		const self = this;
 
 		// Cache validate functions
-		const validateFunctions = Object.keys(options).map(function (requestProperty) {
-			const schema = options[requestProperty];
-			if (typeof schema === 'function') {
-				return {requestProperty, schemaFunction: schema};
-			}
-			const validateFunction = this.ajv.compile(schema);
-			return {requestProperty, validateFunction};
-		}, self); 
+		const validateFunctions = Object.keys(options)
+			.map(function(
+				requestProperty
+				) {
+					const schema = options[requestProperty];
+					if (typeof schema === "function") {
+						return { requestProperty, schemaFunction: schema };
+					}
+					const validateFunction = this.ajv.compile(schema);
+					return { requestProperty, validateFunction };
+				},
+				self);
 
 		// The actual middleware function
 		return (req, res, next) => {
-			var validationErrors = {};
+			let validationErrors = {};
 
-			for (let {requestProperty, validateFunction, schemaFunction} of validateFunctions) {
+			for (let {
+				requestProperty,
+				validateFunction,
+				schemaFunction
+			} of validateFunctions) {
 				if (!validateFunction) {
 					// Get the schema from the dynamic schema function
 					const schema = schemaFunction(req);
@@ -48,7 +57,7 @@ class Validator {
 				}
 			}
 
-			if (Object.keys(validationErrors).length != 0) {
+			if (Object.keys(validationErrors).length !== 0) {
 				next(new ValidationError(validationErrors));
 			} else {
 				next();
@@ -59,14 +68,14 @@ class Validator {
 
 /**
  * Validation Error
- * 
+ *
  * @class ValidationError
  * @extends {Error}
  */
 class ValidationError extends Error {
 	constructor(validationErrors) {
 		super();
-		this.name = 'JsonSchemaValidationError';
+		this.name = "JsonSchemaValidationError";
 		this.validationErrors = validationErrors;
 	}
 }

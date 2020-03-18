@@ -1,65 +1,62 @@
-const expect = require('chai').expect;
-const {
-    Validator
-} = require('../src');
+const expect = require("chai").expect;
+const { Validator } = require("../src");
 
-describe('Ajv', () => {
-	describe('Basic Validation', () => {
+describe("Ajv", () => {
+	describe("Basic Validation", () => {
 		const SCHEMA = {
 			properties: {
 				name: {
-					type: 'string',
+					type: "string",
 					maxLength: 8
 				},
 				info: {
-					type: 'object',
+					type: "object",
 					properties: {
 						age: {
-							type: 'integer',
+							type: "integer",
 							maximum: 100
 						},
 						name: {
-							type: 'object',
+							type: "object",
 							properties: {
 								first: {
-									type: 'string'
+									type: "string"
 								},
 								last: {
-									type: 'string'
+									type: "string"
 								}
 							},
-							required: ['first', 'last']
+							required: ["first", "last"]
 						}
 					},
-					required: ['age']
+					required: ["age"]
 				}
 			},
-			required: ['name']
+			required: ["name"]
 		};
 
 		const BAD_DATA = {
-			name: 'Super Nikolay',
+			name: "Super Nikolay",
 			info: {
 				age: 666,
 				name: {
 					last: false
 				}
-
 			}
 		};
 		const GOOD_DATA = {
-			name: 'Nikolay'
+			name: "Nikolay"
 		};
 
 		const validate = new Validator().ajv.compile(SCHEMA);
 
-		it('should reject bad data', () => {
+		it("should reject bad data", () => {
 			let validated = validate(BAD_DATA);
 			expect(validated).to.be.false;
 			expect(validate.errors).to.have.length;
 		});
 
-		it('should approve good data', () => {
+		it("should approve good data", () => {
 			let validated = validate(GOOD_DATA);
 			expect(validated).to.be.true;
 		});
