@@ -19,11 +19,11 @@ class Validator {
 	 */
 	validate(options) {
 		// Self is a reference to the current Validator instance
-		var self = this;
+		const self = this;
 
 		// Cache validate functions
 		const validateFunctions = Object.keys(options)
-			.map(function (
+			.map(function(
 				requestProperty
 				) {
 					const schema = options[requestProperty];
@@ -37,7 +37,7 @@ class Validator {
 
 		// The actual middleware function
 		return (req, res, next) => {
-			var validationErrors = {};
+			let validationErrors = {};
 
 			for (let {
 				requestProperty,

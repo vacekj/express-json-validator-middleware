@@ -3,9 +3,9 @@ chai.use(require("chai-http"));
 const expect = require("chai").expect;
 const { Validator } = require("../src");
 
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
 app.use(
 	bodyParser.urlencoded({
 		extended: true
@@ -13,12 +13,12 @@ app.use(
 );
 app.use(bodyParser.json());
 
-var validator = new Validator({
+const validator = new Validator({
 	allErrors: true
 });
-var validate = validator.validate;
+const validate = validator.validate;
 
-var personSchema = {
+const personSchema = {
 	properties: {
 		name: {
 			type: "string"
@@ -38,7 +38,9 @@ app.post(
 	}
 );
 
-app.use((err, req, res) => {
+/* Next needs to be specified here for express to know its an error handler */
+// noinspection JSUnusedLocalSymbols
+app.use((err, req, res, next) => {
 	res.status(400).json(err);
 });
 
