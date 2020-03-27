@@ -3,7 +3,7 @@ import { JSONSchema4, JSONSchema6, JSONSchema7 } from "json-schema";
 import { ErrorObject, Options as AjvOptions } from "ajv";
 
 declare module "express-json-validator-middleware" {
-	type OptionKey = "body" | "params";
+	type OptionKey = "body" | "params" | "query";
 
 	type List<T> = {
 		[K in OptionKey]?: T;
