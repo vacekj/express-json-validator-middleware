@@ -10,6 +10,9 @@
 
 <hr>
 
+### Looking for contributors!
+I can no longer dedicate as much of my time to maintaining this library, this is an open call for contributors. Please shoot me an email at vacekj at outlook.com if you would like to contribute or take over the project. 
+
 Coming from `express-jsonschema`? Read our [migration notes](#migrating)
 
 Major version `1.x` of this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
