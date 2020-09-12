@@ -139,7 +139,7 @@ app.post('/street/', validate({body: StreetSchema}), function(req, res) {
     res.send('valid');
 });
 
-// Error handler for valication errors
+// Error handler for validation errors
 app.use(function(err, req, res, next) {
     if (err instanceof ValidationError) {
         // At this point you can execute your error handling code
