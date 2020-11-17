@@ -47,18 +47,18 @@ $ npm install express-json-validator-middleware
 
 1. Require the module
 ```js
-var { Validator, ValidationError } = require('express-json-validator-middleware');
+const { Validator, ValidationError } = require('express-json-validator-middleware');
 ```
 
 2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
 
 ```js
-var validator = new Validator({allErrors: true});
+const validator = new Validator({allErrors: true});
 ```
 
 3. *Optional* - Define a bound shortcut function that can be used instead of Validator.validate
 ```js
-var validate = validator.validate;
+const validate = validator.validate;
 ```
 
 4. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
@@ -97,20 +97,20 @@ More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-e
 ## Example Express app
 
 ```js
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-var { Validator, ValidationError } = require('express-json-validator-middleware');
+const { Validator, ValidationError } = require('express-json-validator-middleware');
 
 
 // Initialize a Validator instance first
-var validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
+const validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
 
 // Define a shortcut function
-var validate = validator.validate;
+const validate = validator.validate;
 
 // Define a JSON Schema
-var StreetSchema = {
+const StreetSchema = {
     type: 'object',
     required: ['number', 'name', 'type'],
     properties: {
@@ -128,7 +128,7 @@ var StreetSchema = {
 }
 
 
-var app = express();
+const app = express();
 
 app.use(bodyParser.json());
 
@@ -155,7 +155,7 @@ app.use(function(err, req, res, next) {
 Sometimes your route may depend on the `body` and `query` both having a specific format.  In this example we use `body` and `query` but you can choose to validate any `request` properties you like. 
 
 ```js
-var TokenSchema = {
+const TokenSchema = {
     type: 'object', // req.query is of type object
     required: ['token'], // req.query.token is required
     properties: {
