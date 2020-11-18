@@ -1,7 +1,6 @@
 # express-json-validator-middleware
 [express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
 
-<a href="https://www.patreon.com/bePatron?u=19773095" data-patreon-widget-type="become-patron-button"><img src="patreon.png"></img></a>
 [![Build Status](https://travis-ci.org/JouzaLoL/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/JouzaLoL/express-json-validator-middleware)
 [![codecov](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/JouzaLoL/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
