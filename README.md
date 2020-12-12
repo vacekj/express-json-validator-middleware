@@ -1,16 +1,14 @@
 # express-json-validator-middleware
 [express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
 
-[![Build Status](https://travis-ci.org/vacekj/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/vacekj/express-json-validator-middleware)
-[![codecov](https://codecov.io/gh/vacekj/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/vacekj/express-json-validator-middleware)
+
 [![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
 [![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![codecov](https://codecov.io/gh/vacekj/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/vacekj/express-json-validator-middleware)
+[![Build Status](https://travis-ci.org/vacekj/express-json-validator-middleware.svg?branch=master)](https://travis-ci.org/vacekj/express-json-validator-middleware)
 
 <hr>
-
-### Looking for contributors!
-I can no longer dedicate as much of my time to maintaining this library, this is an open call for contributors. Please shoot me an email at vacekj at outlook.com if you would like to contribute or take over the project. 
 
 Coming from `express-jsonschema`? Read our [migration notes](#migrating)
 
@@ -37,7 +35,11 @@ Please keep in mind that you have to manually configure ajv to support **draft-0
 ## Installation
 
 ```sh
-$ npm install express-json-validator-middleware
+npm install express-json-validator-middleware
+```
+or
+```sh
+yarn add express-json-validator-middleware
 ```
 
 `--save` is no longer necessary as of `npm@5`
@@ -64,7 +66,7 @@ const validate = validator.validate;
 ```js
 Validator.validate({
     requestProperty: schemaToUse
-})
+});
 ```
 
 Example: Validate `req.body` against `bodySchema`
@@ -97,10 +99,8 @@ More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-e
 
 ```js
 const express = require('express');
-const bodyParser = require('body-parser');
 
 const { Validator, ValidationError } = require('express-json-validator-middleware');
-
 
 // Initialize a Validator instance first
 const validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
@@ -124,17 +124,16 @@ const StreetSchema = {
             enum: ['Street', 'Avenue', 'Boulevard']
         }
     }
-}
-
+};
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 // This route validates req.body against the StreetSchema
 app.post('/street/', validate({body: StreetSchema}), function(req, res) {
     // At this point req.body has been validated and you can
-    // begin to execute your application code
+    // execute your route code
     res.send('valid');
 });
 
@@ -144,8 +143,9 @@ app.use(function(err, req, res, next) {
         // At this point you can execute your error handling code
         res.status(400).send('invalid');
         next();
+    } else {
+    	next(err); // pass error on if not a validation error
     }
-    else next(err); // pass error on if not a validation error
 });
 ```
 
@@ -165,7 +165,7 @@ const TokenSchema = {
             maxLength: 36
         }
     }
-}
+};
 
 app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
     // application code
@@ -204,29 +204,8 @@ app.post('/street/', loadSchema, Validator.validate({body: getSchema}), function
 });
 ```
 
-## Custom keywords
-
-Ajv custom keywords must be defined *before* any validate() middleware
-
-Example:
-
-```js
-var { Validator, ValidationError } = require('express-json-validator-middleware');
-var validator = new Validator({allErrors: true});
-
-validator.ajv.addKeyword('constant', { validate: function (schema, data) {
-  return typeof schema == 'object' && schema !== null
-          ? deepEqual(schema, data)
-          : schema === data;
-}, errors: false });
-
-// route handlers with validate()
-```
-
-More info on custom keywords: [ajv#customs-keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md#defining-custom-keywords)
-
 ## Ajv instance
-The Ajv instance can be accessed via validator.ajv.
+The Ajv instance can be accessed via `validator.ajv`.
 
 ```js
 var { Validator, ValidationError } = require('express-json-validator-middleware');
@@ -235,6 +214,8 @@ var validator = new Validator({allErrors: true});
 validator.ajv // ajv instance
 ```
 
+Ajv must be configured *before* you call `Validator.validate()` to add middleware. (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html)
+
 ## Tests
 Tests are written using Mocha & Chai
 
@@ -242,7 +223,6 @@ Tests are written using Mocha & Chai
 npm install
 npm test
 ```
-
 
 ## More documentation on JSON schemas
 
