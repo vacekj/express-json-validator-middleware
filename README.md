@@ -258,6 +258,7 @@ In `express-jsonschema`, you could define a required property in two ways. Ajv o
 
 ## Credits
 
-- Maintained by [@JouzaLoL](https://github.com/jouzalol)
-- [Original Module](https://github.com/trainiac/express-jsonschema) by [@trainiac](https://github.com/trainiac)
-- PRs: see Contributors
+- Maintained by [@simonplend](https://github.com/simonplend/)
+- Created and previously maintained by [@vacekj](https://github.com/vacekj/)
+- Thank you to all of this project's [contributors](https://github.com/vacekj/express-json-validator-middleware/graphs/contributors)
+- Based on the [express-json-schema](https://github.com/trainiac/express-jsonschema) library by [@trainiac](https://github.com/trainiac)
