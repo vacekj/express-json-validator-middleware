@@ -214,8 +214,7 @@ var validator = new Validator({allErrors: true});
 validator.ajv // ajv instance
 ```
 
-Ajv must be fully configured e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html),
-*before* you call `Validator.validate()` to add middleware.
+Ajv must be configured *before* you call `Validator.validate()` to add middleware. (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html)
 
 ## Tests
 Tests are written using Mocha & Chai
