@@ -84,7 +84,7 @@ const validator = new Validator({ schemas: schemas });
 validator.validate({ body: "element" });
 
 ```
-6. *Optional* - from version 3.0.0 (ajv 7) additional formats are separated to use:
+6. *Optional* - from version 3.0.0 (ajv 7) additional formats are separated. To use:
 ```js
 const addFormats = require("ajv-formats");
 const validator = new Validator();
