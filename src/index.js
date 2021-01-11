@@ -1,4 +1,4 @@
-var Ajv = require("ajv");
+var Ajv = require("ajv").default;
 
 /**
  * Express middleware for validating requests
@@ -23,16 +23,23 @@ class Validator {
 
 		// Cache validate functions
 		const validateFunctions = Object.keys(options)
-			.map(function(
+			.map(function (
 				requestProperty
-				) {
-					const schema = options[requestProperty];
-					if (typeof schema === "function") {
+			) {
+				const schema = options[requestProperty];
+				let validateFunction = null;
+				switch (typeof schema) {
+					case "function":
 						return { requestProperty, schemaFunction: schema };
-					}
-					const validateFunction = this.ajv.compile(schema);
-					return { requestProperty, validateFunction };
-				},
+					case "string":
+						validateFunction = (toValidate) => this.ajv.validate(schema, toValidate);
+						break;
+					default:
+						validateFunction = this.ajv.compile(schema);
+						break;
+				}
+				return { requestProperty, validateFunction };
+			},
 				self);
 
 		// The actual middleware function
@@ -53,7 +60,8 @@ class Validator {
 				// Test if property is valid
 				const valid = validateFunction(req[requestProperty]);
 				if (!valid) {
-					validationErrors[requestProperty] = validateFunction.errors;
+					validationErrors[requestProperty]
+						= validateFunction.errors ? validateFunction.errors : this.ajv.errors;
 				}
 			}
 
