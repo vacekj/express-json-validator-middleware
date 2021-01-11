@@ -68,6 +68,28 @@ Validator.validate({
     requestProperty: schemaToUse
 });
 ```
+5. It is possible to use a predefined schema and validate on element:
+```js
+const schemas = {
+    element: {
+        type: 'object',
+        properties: {
+            prop: {
+                type: "string"
+            }
+        }
+    }
+}
+const validator = new Validator({ schemas: schemas });
+validator.validate({ body: "element" });
+
+```
+6. *Optional* - from version 3.0.0 (ajv 7) additional formats are separated to use:
+```js
+const addFormats = require("ajv-formats");
+const validator = new Validator();
+addFormats(validator.ajv);
+```
 
 Example: Validate `req.body` against `bodySchema`
 
