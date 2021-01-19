@@ -11,6 +11,7 @@ declare module "express-json-validator-middleware" {
 
 	export type ValidateFunction =
 		| Function
+		| String
 		| JSONSchema4
 		| JSONSchema6
 		| JSONSchema7;
