@@ -1,0 +1,30 @@
+# Based on https://github.com/actions/starter-workflows/blob/ebda693bc06206f7a6706a7c8c786b9ca5e6e4b6/ci/node.js.yml
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 14.x, 15.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npx nyc mocha
+    - run: npx nyc report --reporter=lcov
+    - run: cat ./coverage/lcov.info > coverage.lcov
+    - run: npx codecov

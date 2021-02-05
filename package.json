@@ -34,6 +34,7 @@
 		"body-parser": "^1.18.3",
 		"chai": "^3.5.0",
 		"chai-http": "^4.2.1",
+		"codecov": "^3.8.1",
 		"eslint": "^6.8.0",
 		"eslint-config-google": "^0.9.1",
 		"express": "^4.16.4",
