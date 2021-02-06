@@ -22,6 +22,7 @@ declare module "express-json-validator-middleware" {
 	}
 
 	export class ValidationError extends Error {
+		constructor(validationErrors: List<ErrorObject[]>);
 		public validationErrors: List<ErrorObject[]>;
 	}
 }
