@@ -217,44 +217,17 @@ validator.ajv // ajv instance
 Ajv must be configured *before* you call `Validator.validate()` to add middleware. (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html)
 
 ## Tests
-Tests are written using Mocha & Chai
+
+Tests are written using Mocha & Chai.
 
 ```
 npm install
 npm test
 ```
 
-## More documentation on JSON schemas
+## More documentation on JSON Schema
 
-- [spacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
-
-## <a name="migrating"></a> Migrating from `express-jsonschema`
-
-In `express-jsonschema`, you could define a required property in two ways. Ajv only supports one way of doing this.
-
-```js
-// CORRECT
-{
-    type: 'object',
-    properties: {
-        foo: {
-            type: 'string'
-        }
-    },
-    required: ['foo'] // <-- correct way
-}
-
-// WRONG
-{
-    type: 'object',
-    properties: {
-        foo: {
-            type: 'string',
-            required: true // nono way
-        }
-    }
-}
-```
+- [Understanding JSON Schema](https://json-schema.org/understanding-json-schema/index.html)
 
 ## Credits
 
