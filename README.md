@@ -43,33 +43,34 @@ npm install express-json-validator-middleware
 
 ## Getting started
 
-1. Require the module
-```js
-const { Validator, ValidationError } = require('express-json-validator-middleware');
-```
+```javascript
+import { Validator, ValidationError } from "express-json-validator-middleware";
 
-2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
+/**
+ * Initialize a `Validator` instance, optionally passing in
+ * an Ajv options object.
+ *
+ * @see https://github.com/ajv-validator/ajv/tree/v6#options
+ */
+const { validate } = new Validator({ allErrors: true });
 
-```js
-const validator = new Validator({allErrors: true});
-```
-
-3. *Optional* - Define a bound shortcut function that can be used instead of Validator.validate
-```js
+/**
+ * Optional: Alias the `Validator.validate` method for convenience.
+ */
 const validate = validator.validate;
-```
 
-4. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
-```js
-Validator.validate({
-    requestProperty: schemaToUse
-});
-```
-
-Example: Validate `req.body` against `bodySchema`
-
-```js
-app.post('/street/', validate({body: bodySchema}), function(req, res) {
+/**
+ * The `validate` method accepts an object which maps request
+ * properties to the JSON schema which you want them to be
+ * validated against e.g.
+ *
+ * {
+ *   requestPropertyToValidate: jsonSchema
+ * }
+ *
+ * Example: Validate `request.body` against `bodySchema`:
+ */
+app.post("/street", validate({ body: bodySchema }), (request, response) => {
     // route code
 });
 ```
