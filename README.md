@@ -148,29 +148,31 @@ app.use((error, request, response, next) => {
 
 ## Validating multiple request properties
 
-Sometimes your route may depend on the `body` and `query` both having a specific format.  In this example we use `body` and `query` but you can choose to validate any `request` properties you like. 
+Sometimes your route may depend on the `body` and `query` both having a specific
+format. In this example we use `body` and `query` but you can choose to validate
+any `request` properties you like.
 
-```js
+```javascript
 const TokenSchema = {
-    type: 'object', // req.query is of type object
-    required: ['token'], // req.query.token is required
+    type: "object", // request.query is of type object
+    required: ["token"], // request.query.token is required
     properties: {
         uuid: { // validate token
-            type: 'string', 
-            format: 'uuid',
+            type: "string",
+            format: "uuid",
             minLength: 36,
             maxLength: 36
         }
     }
 };
 
-app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
-    // application code
+app.post("/street/", validate({ body: StreetSchema, query: TokenSchema }), (request, response) => {
+    // route code
 });
-
 ```
 
-A valid request must now include a token URL query. Example valid URL: `/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
+A valid request must now include a token URL query. Example valid URL:
+`/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
 
 ## Using dynamic schema
 
