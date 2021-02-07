@@ -94,31 +94,30 @@ ValidationError {
 
 More information on [Ajv errors](https://github.com/ajv-validator/ajv/tree/v6#validation-errors).
 
-```js
-const express = require('express');
+## Example Express application
 
-const { Validator, ValidationError } = require('express-json-validator-middleware');
+```javascript
+import express from "express";
+import { Validator, ValidationError } from "express-json-validator-middleware";
 
-// Initialize a Validator instance first
-const validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
-
-// Define a shortcut function
+// Create a `Validator` instance
+const validator = new Validator({ allErrors: true });
 const validate = validator.validate;
 
 // Define a JSON Schema
 const StreetSchema = {
-    type: 'object',
-    required: ['number', 'name', 'type'],
+    type: "object",
+    required: ["number", "name", "type"],
     properties: {
         number: {
-            type: 'number'
+            type: "number"
         },
         name: {
-            type: 'string'
+            type: "string"
         },
         type: {
-            type: 'string',
-            enum: ['Street', 'Avenue', 'Boulevard']
+            type: "string",
+            enum: ["Street", "Avenue", "Boulevard"]
         }
     }
 };
@@ -127,21 +126,22 @@ const app = express();
 
 app.use(express.json());
 
-// This route validates req.body against the StreetSchema
-app.post('/street/', validate({body: StreetSchema}), function(req, res) {
-    // At this point req.body has been validated and you can
-    // execute your route code
-    res.send('valid');
+// This route validates `request.body` against the `StreetSchema`
+app.post("/street/", validate({ body: StreetSchema }), (request, response) => {
+    // At this point `request.body` has been validated
+	// and you can execute your route code
+    response.send("valid");
 });
 
 // Error handler for validation errors
-app.use(function(err, req, res, next) {
-    if (err instanceof ValidationError) {
+app.use((error, request, response, next) => {
+    if (error instanceof ValidationError) {
         // At this point you can execute your error handling code
-        res.status(400).send('invalid');
+        response.status(400).send("invalid");
         next();
     } else {
-    	next(err); // pass error on if not a validation error
+        // Pass error on if not a validation error
+        next(error);
     }
 });
 ```
