@@ -1,38 +1,41 @@
-# express-json-validator-middleware
-[express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
+# Express JSON Validator Middleware
 
+> [Express](https://github.com/expressjs/express/) middleware for validating
+requests against JSON schemas.
 
-[![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
-[![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
-[![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm version](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm monthly downloads](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm license](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![Build status](https://github.com/vacekj/express-json-validator-middleware/workflows/Node.js%20CI/badge.svg)](https://github.com/vacekj/express-json-validator-middleware/actions?query=workflow%3A%22Node.js+CI%22)
 [![codecov](https://codecov.io/gh/vacekj/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/vacekj/express-json-validator-middleware)
-[![Build Status](https://github.com/vacekj/express-json-validator-middleware/workflows/Node.js%20CI/badge.svg)](https://github.com/vacekj/express-json-validator-middleware/actions?query=workflow%3A%22Node.js+CI%22)
-
-<hr>
-
-Coming from `express-jsonschema`? Read our [migration notes](#migrating)
-
-Major version `1.x` of this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
-
-Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
-Please keep in mind that you have to manually configure ajv to support **draft-06** schema files from now on (see https://github.com/epoberezkin/ajv#using-version-6).
-
-## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
-
-- **Performance** - [ajv](https://github.com/epoberezkin/ajv) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
-- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v7 proposal.
-- **Active Maintenance** - `express-json-validator-middleware` is being actively maintained.
 
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure.
-- **Standard** - JSON schemas are not specific to Javascript. In fact, they are used just about everywhere.
+- **Standard** - JSON schemas are not specific to JavaScript. In fact, they are used just about everywhere.
 - **Fail-Fast** - Catch errors early in your logic, evading confusing errors later.
 - **Separate Validation** - Keep your routes clean. Validation logic doesn't need to be defined in your route handlers.
 - **Error Messaging** - Ajv provides you with rich error objects that can easily be transformed into human-readable format.
 - **Documentation** - Creating a JSON Schema is another way of documenting your application.
 
-## Installation
+## Ajv versions
+
+Major version `1.x` of this module uses `ajv@5`, read their changelog and
+migration guide [here](https://github.com/ajv-validator/ajv/releases/tag/5.0.0).
+
+Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
+You have to manually configure Ajv to support **draft-06** schemas
+(see https://github.com/ajv-validator/ajv/tree/v6#using-version-6).
+
+## Why use this library over `express-jsonschema`?
+
+- **Performance** - [Ajv](https://github.com/ajv-validator/ajv/tree/v6) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
+- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v7 proposal.
+- **Active Maintenance** - `express-json-validator-middleware` is being actively maintained.
+
+Coming from `express-jsonschema`? Read our [migration notes](docs/migrating-from-express-jsonschema.md).
+
+## Install
 
 ```sh
 npm install express-json-validator-middleware
