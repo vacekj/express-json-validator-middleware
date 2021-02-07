@@ -40,12 +40,6 @@ Coming from `express-jsonschema`? Read our [migration notes](docs/migrating-from
 ```sh
 npm install express-json-validator-middleware
 ```
-or
-```sh
-yarn add express-json-validator-middleware
-```
-
-`--save` is no longer necessary as of `npm@5`
 
 ## Getting started
 
