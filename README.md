@@ -176,29 +176,30 @@ A valid request must now include a token URL query. Example valid URL:
 
 ## Using dynamic schema
 
-Instead of passing in a schema object you can also pass in a function that will return a schema. It is 
-useful if you need to generate or alter the schema based on the request object.
+Instead of passing in a schema object you can also pass in a function that will
+return a schema. It is useful if you need to generate or alter the schema based
+on the request object.
 
-Example: loading schema from the database
+Example: Loading schema from the database:
 
+```javascript
 // Middleware executed before validate function
-```js
-function loadSchema(req, res, next) {
+function loadSchema(request, response, next) {
     getSchemaFromDB()
         .then((schema) => {
-            req.schema = schema;
+            request.schema = schema;
             next();
         })
         .catch(next);
 }
 
-// function that returns a schema object
-function getSchema(req) {
+// Function which returns a schema object
+function getSchema(request) {
 	// return the schema from the previous middleware or the default schema
-    return req.schema || DefaultSchema;
+    return request.schema || DefaultSchema;
 }
 
-app.post('/street/', loadSchema, Validator.validate({body: getSchema}), function(req, res) {
+app.post("/street/", loadSchema, Validator.validate({ body: getSchema }), (request, response) => {
     // route code
 });
 ```
