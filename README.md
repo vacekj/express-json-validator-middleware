@@ -205,16 +205,20 @@ app.post("/street/", loadSchema, Validator.validate({ body: getSchema }), (reque
 ```
 
 ## Ajv instance
+
 The Ajv instance can be accessed via `validator.ajv`.
 
-```js
-var { Validator, ValidationError } = require('express-json-validator-middleware');
-var validator = new Validator({allErrors: true});
+```javascript
+import { Validator, ValidationError } from "express-json-validator-middleware";
 
-validator.ajv // ajv instance
+const validator = new Validator({ allErrors: true });
+
+// Ajv instance
+validator.ajv;
 ```
 
-Ajv must be configured *before* you call `Validator.validate()` to add middleware. (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html)
+Ajv must be configured *before* you call `Validator.validate()` to add middleware
+(e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html).
 
 ## Tests
 
