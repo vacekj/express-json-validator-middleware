@@ -77,23 +77,22 @@ app.post("/street", validate({ body: bodySchema }), (request, response) => {
 
 ## Error handling
 
-On encountering erroneous data, the validator will call next() with a ValidationError object.
-It is recommended to setup a general error handler for your app where you will catch ValidationError errors
+On encountering invalid data, the validator will call `next()` with a
+`ValidationError` object. It is recommended to setup a general error handler
+for your app where you will handle `ValidationError` errors.
 
-Example - error thrown for the `body` request property
+Example - error thrown for the `body` request property:
 
-```js
+```javascript
 ValidationError {
-    name: 'JsonSchemaValidationError',
+    name: "JsonSchemaValidationError",
     validationErrors: {
         body: [AjvError]
     }
 }
 ```
 
-More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-errors)
-
-## Example Express app
+More information on [Ajv errors](https://github.com/ajv-validator/ajv/tree/v6#validation-errors).
 
 ```js
 const express = require('express');
