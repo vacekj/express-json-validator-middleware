@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { RequestHandler } from "express-serve-static-core";
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from "json-schema";
 import { Ajv, ErrorObject, Options as AjvOptions } from "ajv";
@@ -9,11 +10,14 @@ declare module "express-json-validator-middleware" {
 		[K in OptionKey]?: T;
 	};
 
-	export type ValidateFunction =
-		| Function
+	type AllowedSchema =
 		| JSONSchema4
 		| JSONSchema6
 		| JSONSchema7;
+
+	export type ValidateFunction =
+		| ((req: Request) => AllowedSchema)
+		| AllowedSchema;
 
 	export class Validator {
 		constructor(options: AjvOptions);
