@@ -1,6 +1,6 @@
 import { RequestHandler } from "express-serve-static-core";
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from "json-schema";
-import { ErrorObject, Options as AjvOptions } from "ajv";
+import Ajv, { ErrorObject, Options as AjvOptions } from "ajv";
 
 declare module "express-json-validator-middleware" {
 	type OptionKey = "body" | "params" | "query";
@@ -17,9 +17,10 @@ declare module "express-json-validator-middleware" {
 		| JSONSchema7;
 
 	export class Validator {
+		ajv: Ajv
 		constructor(options: AjvOptions);
 
-		validate(rules: List<ValidateFunction>): RequestHandler;
+		validate (rules: List<ValidateFunction>): RequestHandler;
 	}
 
 	export class ValidationError extends Error {
