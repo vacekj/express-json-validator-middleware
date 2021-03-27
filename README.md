@@ -1,260 +1,273 @@
-# express-json-validator-middleware
-[express.js](https://github.com/visionmedia/express) middleware for validating requests against JSON Schema
+# Express JSON Validator Middleware
 
+> [Express](https://github.com/expressjs/express/) middleware for validating
+requests against JSON schemas.
 
-[![npm](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
-[![npm](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
-[![npm](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm version](https://img.shields.io/npm/v/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm monthly downloads](https://img.shields.io/npm/dm/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![npm license](https://img.shields.io/npm/l/express-json-validator-middleware.svg)](https://www.npmjs.com/package/express-json-validator-middleware)
+[![Build status](https://github.com/vacekj/express-json-validator-middleware/workflows/Node.js%20CI/badge.svg)](https://github.com/vacekj/express-json-validator-middleware/actions?query=workflow%3A%22Node.js+CI%22)
 [![codecov](https://codecov.io/gh/vacekj/express-json-validator-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/vacekj/express-json-validator-middleware)
-[![Build Status](https://github.com/vacekj/express-json-validator-middleware/workflows/Node.js%20CI/badge.svg)](https://github.com/vacekj/express-json-validator-middleware/actions?query=workflow%3A%22Node.js+CI%22)
-
-<hr>
-
-Coming from `express-jsonschema`? Read our [migration notes](#migrating)
-
-Major version `1.x` of this module uses `ajv@5`, read their changelog and migration guide [here](https://github.com/epoberezkin/ajv/releases/tag/5.0.0).
-
-Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
-Please keep in mind that you have to manually configure ajv to support **draft-06** schema files from now on (see https://github.com/epoberezkin/ajv#using-version-6).
-
-## Why use this library over [express-jsonschema](https://github.com/trainiac/express-jsonschema) ?
-
-- **Performance** - [ajv](https://github.com/epoberezkin/ajv) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
-- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v7 proposal.
-- **Active Maintenance** - `express-json-validator-middleware` is being actively maintained.
 
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure.
-- **Standard** - JSON schemas are not specific to Javascript. In fact, they are used just about everywhere.
+- **Standard** - JSON schemas are not specific to JavaScript. In fact, they are used just about everywhere.
 - **Fail-Fast** - Catch errors early in your logic, evading confusing errors later.
 - **Separate Validation** - Keep your routes clean. Validation logic doesn't need to be defined in your route handlers.
 - **Error Messaging** - Ajv provides you with rich error objects that can easily be transformed into human-readable format.
 - **Documentation** - Creating a JSON Schema is another way of documenting your application.
 
-## Installation
+## Install
 
 ```sh
 npm install express-json-validator-middleware
 ```
-or
-```sh
-yarn add express-json-validator-middleware
-```
-
-`--save` is no longer necessary as of `npm@5`
 
 ## Getting started
 
-1. Require the module
-```js
-const { Validator, ValidationError } = require('express-json-validator-middleware');
-```
+```javascript
+import { Validator } from "express-json-validator-middleware";
 
-2. Initialize a Validator instance, optionally passing in an [ajv#options](https://github.com/epoberezkin/ajv#options) object
+/**
+ * Define a JSON schema.
+ */
+ const addressSchema = {
+  type: "object",
+  required: ["street"],
+  properties: {
+    street: {
+      type: "string",
+    }
+  },
+};
 
-```js
-const validator = new Validator({allErrors: true});
-```
+/**
+ * Initialize a `Validator` instance, optionally passing in
+ * an Ajv options object.
+ *
+ * @see https://github.com/ajv-validator/ajv/tree/v6#options
+ */
+ const { validate } = new Validator();
 
-3. *Optional* - Define a bound shortcut function that can be used instead of Validator.validate
-```js
-const validate = validator.validate;
-```
-
-4. Use the Validator.validate method as an Express middleware, passing in an options object of the following format:
-```js
-Validator.validate({
-    requestProperty: schemaToUse
+/**
+ * The `validate` method accepts an object which maps request
+ * properties to the JSON schema you want them to be validated
+ * against e.g.
+ *
+ * { requestPropertyToValidate: jsonSchemaObject }
+ *
+ * Validate `request.body` against `addressSchema`.
+ */
+app.post("/address", validate({ body: addressSchema }), (request, response) => {
+  /**
+   * Route handler logic to run when `request.body` has been validated.
+   */
+  response.send({});
 });
 ```
 
-Example: Validate `req.body` against `bodySchema`
-
-```js
-app.post('/street/', validate({body: bodySchema}), function(req, res) {
-    // route code
-});
-```
+Coming from `express-jsonschema`? Read the [migration notes](docs/migrating-from-express-jsonschema.md).
 
 ## Error handling
 
-On encountering erroneous data, the validator will call next() with a ValidationError object.
-It is recommended to setup a general error handler for your app where you will catch ValidationError errors
+On encountering invalid data, the validator will call `next()` with a
+`ValidationError` object. It is recommended to setup a general error handler
+for your app where you handle `ValidationError` errors.
 
-Example - error thrown for the `body` request property
+Example - error thrown for the `body` request property:
 
-```js
+```javascript
 ValidationError {
-    name: 'JsonSchemaValidationError',
+    name: "JsonSchemaValidationError",
     validationErrors: {
         body: [AjvError]
     }
 }
 ```
 
-More information on [ajv#errors](https://github.com/epoberezkin/ajv#validation-errors)
+More information on [Ajv errors](https://github.com/ajv-validator/ajv/tree/v6#validation-errors).
 
-## Example Express app
+## Example Express application
 
-```js
-const express = require('express');
+```javascript
+import express from "express";
 
-const { Validator, ValidationError } = require('express-json-validator-middleware');
-
-// Initialize a Validator instance first
-const validator = new Validator({allErrors: true}); // pass in options to the Ajv instance
-
-// Define a shortcut function
-const validate = validator.validate;
-
-// Define a JSON Schema
-const StreetSchema = {
-    type: 'object',
-    required: ['number', 'name', 'type'],
-    properties: {
-        number: {
-            type: 'number'
-        },
-        name: {
-            type: 'string'
-        },
-        type: {
-            type: 'string',
-            enum: ['Street', 'Avenue', 'Boulevard']
-        }
-    }
-};
+import { Validator, ValidationError } from "express-json-validator-middleware";
 
 const app = express();
 
 app.use(express.json());
 
-// This route validates req.body against the StreetSchema
-app.post('/street/', validate({body: StreetSchema}), function(req, res) {
-    // At this point req.body has been validated and you can
-    // execute your route code
-    res.send('valid');
+const addressSchema = {
+  type: "object",
+  required: ["number", "street", "type"],
+  properties: {
+    number: {
+      type: "number",
+    },
+    street: {
+      type: "string",
+    },
+    type: {
+      type: "string",
+      enum: ["Street", "Avenue", "Boulevard"],
+    },
+  },
+};
+
+const { validate } = new Validator();
+
+/**
+ * Validate `request.body` against `addressSchema`.
+ */
+app.post("/address", validate({ body: addressSchema }), (request, response) => {
+  /**
+   * Route handler logic to run when `request.body` has been validated.
+   */
+  response.send({});
 });
 
-// Error handler for validation errors
-app.use(function(err, req, res, next) {
-    if (err instanceof ValidationError) {
-        // At this point you can execute your error handling code
-        res.status(400).send('invalid');
-        next();
-    } else {
-    	next(err); // pass error on if not a validation error
-    }
+/**
+ * Error handler middleware for validation errors.
+ */
+app.use((error, request, response, next) => {
+  // Check the error is a validation error
+  if (error instanceof ValidationError) {
+    // Handle the error
+    response.status(400).send(error.validationErrors);
+    next();
+  } else {
+    // Pass error on if not a validation error
+    next(error);
+  }
 });
+
+app.listen(3000);
 ```
 
 ## Validating multiple request properties
 
-Sometimes your route may depend on the `body` and `query` both having a specific format.  In this example we use `body` and `query` but you can choose to validate any `request` properties you like. 
+Sometimes your route may depend on the `body` and `query` both having a specific
+format. In this example we use `body` and `query` but you can choose to validate
+any `request` properties you like. This example builds on the
+[Example Express application](#example-express-application).
 
-```js
-const TokenSchema = {
-    type: 'object', // req.query is of type object
-    required: ['token'], // req.query.token is required
-    properties: {
-        uuid: { // validate token
-            type: 'string', 
-            format: 'uuid',
-            minLength: 36,
-            maxLength: 36
-        }
-    }
+```javascript
+const tokenSchema = {
+  type: "object",
+  required: ["token"],
+  properties: {
+    token: {
+      type: "string",
+      minLength: 36,
+      maxLength: 36
+    },
+  },
 };
 
-app.post('/street/', Validator.validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
-    // application code
-});
-
+app.post(
+  "/address",
+  validate({ body: addressSchema, query: tokenSchema }),
+  (request, response) => {
+    /**
+     * Route handler logic to run when `request.body` and
+     * `request.query` have both been validated.
+     */
+    response.send({});
+  }
+);
 ```
 
-A valid request must now include a token URL query. Example valid URL: `/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
+A valid request must now include a token URL query. Example valid URL:
+`/street/?uuid=af3996d0-0e8b-4165-ae97-fdc0823be417`
 
 ## Using dynamic schema
 
-Instead of passing in a schema object you can also pass in a function that will return a schema. It is 
-useful if you need to generate or alter the schema based on the request object.
+Instead of passing in a schema object you can also pass in a function that will
+return a schema. It is useful if you need to generate or alter the schema based
+on the request object.
 
-Example: loading schema from the database
+Example: Loading schema from a database (this example builds on the
+[Example Express application](#example-express-application)):
 
-// Middleware executed before validate function
-```js
-function loadSchema(req, res, next) {
-    getSchemaFromDB()
-        .then((schema) => {
-            req.schema = schema;
-            next();
-        })
-        .catch(next);
+```javascript
+function getSchemaFromDb() {
+  /**
+   * In a real application this would be making a database query.
+   */
+  return Promise.resolve(addressSchema);
 }
 
-// function that returns a schema object
-function getSchema(req) {
-	// return the schema from the previous middleware or the default schema
-    return req.schema || DefaultSchema;
+/**
+ * Middleware to set schema on the `request` object.
+ */
+async function loadSchema(request, response, next) {
+  try {
+    request.schema = await getSchemaFromDb();
+    next();
+  } catch (error) {
+    next(error);
+  }
 }
 
-app.post('/street/', loadSchema, Validator.validate({body: getSchema}), function(req, res) {
-    // route code
-});
+/**
+ * Get schema set by the `loadSchema` middleware.
+ */
+function getSchema(request) {
+  return request.schema;
+}
+
+app.post(
+  "/address",
+  loadSchema,
+  validate({ body: getSchema }),
+  (request, response) => {
+    /**
+     * Route handler logic to run when `request.body` has been validated.
+     */
+    response.send({});
+  }
+);
 ```
 
 ## Ajv instance
+
 The Ajv instance can be accessed via `validator.ajv`.
 
-```js
-var { Validator, ValidationError } = require('express-json-validator-middleware');
-var validator = new Validator({allErrors: true});
+```javascript
+import { Validator, ValidationError } from "express-json-validator-middleware";
 
-validator.ajv // ajv instance
+const validator = new Validator();
+
+// Ajv instance
+validator.ajv;
 ```
 
-Ajv must be configured *before* you call `Validator.validate()` to add middleware. (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html)
+Ajv must be configured *before* you call `Validator.validate()` to add middleware
+(e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html).
+
+## Ajv versions
+
+The major version `1.x` of this module uses `ajv@5`, read their changelog and
+migration guide [here](https://github.com/ajv-validator/ajv/releases/tag/5.0.0).
+
+Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
+You have to manually configure Ajv to support **draft-06** schemas
+(see https://github.com/ajv-validator/ajv/tree/v6#using-version-6).
 
 ## Tests
-Tests are written using Mocha & Chai
+
+Tests are written using Mocha & Chai.
 
 ```
 npm install
 npm test
 ```
 
-## More documentation on JSON schemas
+## More documentation on JSON Schema
 
-- [spacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
-
-## <a name="migrating"></a> Migrating from `express-jsonschema`
-
-In `express-jsonschema`, you could define a required property in two ways. Ajv only supports one way of doing this.
-
-```js
-// CORRECT
-{
-    type: 'object',
-    properties: {
-        foo: {
-            type: 'string'
-        }
-    },
-    required: ['foo'] // <-- correct way
-}
-
-// WRONG
-{
-    type: 'object',
-    properties: {
-        foo: {
-            type: 'string',
-            required: true // nono way
-        }
-    }
-}
-```
+- [Understanding JSON Schema](https://json-schema.org/understanding-json-schema/index.html)
 
 ## Credits
 
