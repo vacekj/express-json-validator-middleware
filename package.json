@@ -3,7 +3,7 @@
 	"version": "2.1.1",
 	"description": "An Express middleware to validate requests against JSON Schemas",
 	"main": "src/index.js",
-	"author": "Josef Vacek",
+	"author": "Simon Plenderleith",
 	"license": "MIT",
 	"keywords": [
 		"express",
@@ -14,12 +14,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/JouzaLoL/express-json-validator-middleware.git"
+		"url": "git+https://github.com/simonplend/express-json-validator-middleware.git"
 	},
 	"bugs": {
-		"url": "https://github.com/JouzaLoL/express-json-validator-middleware/issues"
+		"url": "https://github.com/simonplend/express-json-validator-middleware/issues"
 	},
-	"homepage": "https://github.com/JouzaLoL/express-json-validator-middleware#readme",
+	"homepage": "https://github.com/simonplend/express-json-validator-middleware#readme",
 	"scripts": {
 		"test": "mocha",
 		"lint": "eslint \"src/*.js\" --fix",
