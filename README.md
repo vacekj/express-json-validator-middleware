@@ -44,7 +44,20 @@ npm install express-json-validator-middleware
 ## Getting started
 
 ```javascript
-import { Validator, ValidationError } from "express-json-validator-middleware";
+import { Validator } from "express-json-validator-middleware";
+
+/**
+ * Define a JSON schema.
+ */
+ const addressSchema = {
+  type: "object",
+  required: ["street"],
+  properties: {
+    street: {
+      type: "string",
+    }
+  },
+};
 
 /**
  * Initialize a `Validator` instance, optionally passing in
@@ -52,26 +65,22 @@ import { Validator, ValidationError } from "express-json-validator-middleware";
  *
  * @see https://github.com/ajv-validator/ajv/tree/v6#options
  */
-const { validate } = new Validator({ allErrors: true });
-
-/**
- * Optional: Alias the `Validator.validate` method for convenience.
- */
-const validate = validator.validate;
+ const { validate } = new Validator();
 
 /**
  * The `validate` method accepts an object which maps request
- * properties to the JSON schema which you want them to be
- * validated against e.g.
+ * properties to the JSON schema you want them to be validated
+ * against e.g.
  *
- * {
- *   requestPropertyToValidate: jsonSchema
- * }
+ * { requestPropertyToValidate: jsonSchemaObject }
  *
- * Example: Validate `request.body` against `bodySchema`:
+ * Validate `request.body` against `addressSchema`.
  */
-app.post("/street", validate({ body: bodySchema }), (request, response) => {
-    // route code
+app.post("/address", validate({ body: addressSchema }), (request, response) => {
+  /**
+   * Route handler logic to run when `request.body` has been validated.
+   */
+  response.send({});
 });
 ```
 
@@ -79,7 +88,7 @@ app.post("/street", validate({ body: bodySchema }), (request, response) => {
 
 On encountering invalid data, the validator will call `next()` with a
 `ValidationError` object. It is recommended to setup a general error handler
-for your app where you will handle `ValidationError` errors.
+for your app where you handle `ValidationError` errors.
 
 Example - error thrown for the `body` request property:
 
@@ -98,77 +107,91 @@ More information on [Ajv errors](https://github.com/ajv-validator/ajv/tree/v6#va
 
 ```javascript
 import express from "express";
+
 import { Validator, ValidationError } from "express-json-validator-middleware";
-
-// Create a `Validator` instance
-const validator = new Validator({ allErrors: true });
-const validate = validator.validate;
-
-// Define a JSON Schema
-const StreetSchema = {
-    type: "object",
-    required: ["number", "name", "type"],
-    properties: {
-        number: {
-            type: "number"
-        },
-        name: {
-            type: "string"
-        },
-        type: {
-            type: "string",
-            enum: ["Street", "Avenue", "Boulevard"]
-        }
-    }
-};
 
 const app = express();
 
 app.use(express.json());
 
-// This route validates `request.body` against the `StreetSchema`
-app.post("/street/", validate({ body: StreetSchema }), (request, response) => {
-    // At this point `request.body` has been validated
-	// and you can execute your route code
-    response.send("valid");
+const addressSchema = {
+  type: "object",
+  required: ["number", "street", "type"],
+  properties: {
+    number: {
+      type: "number",
+    },
+    street: {
+      type: "string",
+    },
+    type: {
+      type: "string",
+      enum: ["Street", "Avenue", "Boulevard"],
+    },
+  },
+};
+
+const { validate } = new Validator();
+
+/**
+ * Validate `request.body` against `addressSchema`.
+ */
+app.post("/address", validate({ body: addressSchema }), (request, response) => {
+  /**
+   * Route handler logic to run when `request.body` has been validated.
+   */
+  response.send({});
 });
 
-// Error handler for validation errors
+/**
+ * Error handler middleware for validation errors.
+ */
 app.use((error, request, response, next) => {
-    if (error instanceof ValidationError) {
-        // At this point you can execute your error handling code
-        response.status(400).send("invalid");
-        next();
-    } else {
-        // Pass error on if not a validation error
-        next(error);
-    }
+  // Check the error is a validation error
+  if (error instanceof ValidationError) {
+    // Handle the error
+    response.status(400).send(error.validationErrors);
+    next();
+  } else {
+    // Pass error on if not a validation error
+    next(error);
+  }
 });
+
+app.listen(3000);
 ```
 
 ## Validating multiple request properties
 
 Sometimes your route may depend on the `body` and `query` both having a specific
 format. In this example we use `body` and `query` but you can choose to validate
-any `request` properties you like.
+any `request` properties you like. This example builds on the
+[Example Express application](#example-express-application).
 
 ```javascript
-const TokenSchema = {
-    type: "object", // request.query is of type object
-    required: ["token"], // request.query.token is required
-    properties: {
-        uuid: { // validate token
-            type: "string",
-            format: "uuid",
-            minLength: 36,
-            maxLength: 36
-        }
-    }
+const tokenSchema = {
+  type: "object",
+  required: ["token"],
+  properties: {
+    token: {
+      type: "string",
+      minLength: 36,
+      maxLength: 36
+    },
+  },
 };
 
-app.post("/street/", validate({ body: StreetSchema, query: TokenSchema }), (request, response) => {
-    // route code
-});
+app.post(
+  "/address",
+  validate({ body: addressSchema, query: tokenSchema }),
+  (request, response) => {
+    /**
+     * Route handler logic to run when `request.body` and
+     * `request.query` have both been validated.
+     */
+    response.send({});
+  }
+);
 ```
 
 A valid request must now include a token URL query. Example valid URL:
@@ -180,28 +203,47 @@ Instead of passing in a schema object you can also pass in a function that will
 return a schema. It is useful if you need to generate or alter the schema based
 on the request object.
 
-Example: Loading schema from the database:
+Example: Loading schema from a database (this example builds on the
+[Example Express application](#example-express-application)):
 
 ```javascript
-// Middleware executed before validate function
-function loadSchema(request, response, next) {
-    getSchemaFromDB()
-        .then((schema) => {
-            request.schema = schema;
-            next();
-        })
-        .catch(next);
+function getSchemaFromDb() {
+  /**
+   * In a real application this would be making a database query.
+   */
+  return Promise.resolve(addressSchema);
 }
 
-// Function which returns a schema object
+/**
+ * Middleware to set schema on the `request` object.
+ */
+async function loadSchema(request, response, next) {
+  try {
+    request.schema = await getSchemaFromDb();
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Get schema set by the `loadSchema` middleware.
+ */
 function getSchema(request) {
-	// return the schema from the previous middleware or the default schema
-    return request.schema || DefaultSchema;
+  return request.schema;
 }
 
-app.post("/street/", loadSchema, Validator.validate({ body: getSchema }), (request, response) => {
-    // route code
-});
+app.post(
+  "/address",
+  loadSchema,
+  validate({ body: getSchema }),
+  (request, response) => {
+    /**
+     * Route handler logic to run when `request.body` has been validated.
+     */
+    response.send({});
+  }
+);
 ```
 
 ## Ajv instance
@@ -211,7 +253,7 @@ The Ajv instance can be accessed via `validator.ajv`.
 ```javascript
 import { Validator, ValidationError } from "express-json-validator-middleware";
 
-const validator = new Validator({ allErrors: true });
+const validator = new Validator();
 
 // Ajv instance
 validator.ajv;
