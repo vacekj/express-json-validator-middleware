@@ -18,14 +18,6 @@ requests against JSON schemas.
 - **Error Messaging** - Ajv provides you with rich error objects that can easily be transformed into human-readable format.
 - **Documentation** - Creating a JSON Schema is another way of documenting your application.
 
-## Why use this library over `express-jsonschema`?
-
-- **Performance** - [Ajv](https://github.com/ajv-validator/ajv/tree/v6) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
-- **Latest JSON Schema Standard** - [ajv](https://github.com/epoberezkin/ajv) supports JSON Schema v7 proposal.
-- **Active Maintenance** - `express-json-validator-middleware` is being actively maintained.
-
-Coming from `express-jsonschema`? Read our [migration notes](docs/migrating-from-express-jsonschema.md).
-
 ## Install
 
 ```sh
@@ -74,6 +66,8 @@ app.post("/address", validate({ body: addressSchema }), (request, response) => {
   response.send({});
 });
 ```
+
+Coming from `express-jsonschema`? Read the [migration notes](docs/migrating-from-express-jsonschema.md).
 
 ## Error handling
 
