@@ -18,15 +18,6 @@ requests against JSON schemas.
 - **Error Messaging** - Ajv provides you with rich error objects that can easily be transformed into human-readable format.
 - **Documentation** - Creating a JSON Schema is another way of documenting your application.
 
-## Ajv versions
-
-Major version `1.x` of this module uses `ajv@5`, read their changelog and
-migration guide [here](https://github.com/ajv-validator/ajv/releases/tag/5.0.0).
-
-Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
-You have to manually configure Ajv to support **draft-06** schemas
-(see https://github.com/ajv-validator/ajv/tree/v6#using-version-6).
-
 ## Why use this library over `express-jsonschema`?
 
 - **Performance** - [Ajv](https://github.com/ajv-validator/ajv/tree/v6) offers a [significant performance boost over](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance) JSONSchema.
@@ -261,6 +252,15 @@ validator.ajv;
 
 Ajv must be configured *before* you call `Validator.validate()` to add middleware
 (e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html).
+
+## Ajv versions
+
+The major version `1.x` of this module uses `ajv@5`, read their changelog and
+migration guide [here](https://github.com/ajv-validator/ajv/releases/tag/5.0.0).
+
+Major version `2.x` uses `ajv@6` in order to support draft-07 of JSON Schema.
+You have to manually configure Ajv to support **draft-06** schemas
+(see https://github.com/ajv-validator/ajv/tree/v6#using-version-6).
 
 ## Tests
 
