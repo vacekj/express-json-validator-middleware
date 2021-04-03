@@ -21,7 +21,7 @@
 	},
 	"homepage": "https://github.com/simonplend/express-json-validator-middleware#readme",
 	"scripts": {
-		"test": "tap test/*.test.js",
+		"test": "tap",
 		"lint": "eslint \"src/*.js\" --fix",
 		"prepush": "npm run lint && npm run test",
 		"prepublish": "npm run lint && npm run test"
