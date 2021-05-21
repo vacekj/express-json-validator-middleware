@@ -21,7 +21,7 @@
 	},
 	"homepage": "https://github.com/simonplend/express-json-validator-middleware#readme",
 	"scripts": {
-		"test": "mocha",
+		"test": "tap",
 		"lint": "eslint \"src/*.js\" --fix",
 		"prepush": "npm run lint && npm run test",
 		"prepublish": "npm run lint && npm run test"
@@ -31,9 +31,6 @@
 		"timeout": 15000
 	},
 	"devDependencies": {
-		"body-parser": "^1.18.3",
-		"chai": "^3.5.0",
-		"chai-http": "^4.2.1",
 		"codecov": "^3.8.1",
 		"eslint": "^6.8.0",
 		"eslint-config-google": "^0.9.1",
@@ -41,14 +38,15 @@
 		"husky": "^0.14.3",
 		"lint-staged": "^10.0.8",
 		"mocha": "^7.1.1",
-		"nyc": "^15.0.0",
-		"prettier": "^1.19.1"
+		"prettier": "^1.19.1",
+		"simple-get": "^4.0.0",
+		"tap": "^15.0.1"
 	},
 	"dependencies": {
-		"ajv": "^6.6.2",
 		"@types/express": "^4.17.3",
+		"@types/express-serve-static-core": "^4.17.2",
 		"@types/json-schema": "^7.0.4",
-		"@types/express-serve-static-core": "^4.17.2"
+		"ajv": "^6.6.2"
 	},
 	"husky": {
 		"hooks": {
