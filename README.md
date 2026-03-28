@@ -51,9 +51,10 @@ const addressSchema = {
  * Initialize a `Validator` instance, optionally passing in
  * an Ajv options object.
  *
- * @see https://github.com/ajv-validator/ajv/tree/v6#options
+ * @see https://ajv.js.org/options.html
  */
- const { validate } = new Validator();
+const validator = new Validator();
+const { validate } = validator;
 
 /**
  * The `validate` method accepts an object which maps request
@@ -71,6 +72,10 @@ app.post("/address", validate({ body: addressSchema }), (request, response) => {
   response.send({});
 });
 ```
+
+If you need to add formats, plugins, or custom keywords to Ajv, create a
+`Validator` instance first, configure `validator.ajv`, and only then call
+`validate()`. See [Ajv instance](#ajv-instance).
 
 Coming from `express-jsonschema`? Read the [migration notes](docs/migrating-from-express-jsonschema.md).
 
@@ -149,7 +154,8 @@ const addressSchema = {
   },
 };
 
-const { validate } = new Validator();
+const validator = new Validator();
+const { validate } = validator;
 
 /**
  * Validate `request.body` against `addressSchema`.
@@ -295,19 +301,60 @@ app.post(
 
 ## Ajv instance
 
-The Ajv instance can be accessed via `validator.ajv`.
+Each `Validator` instance exposes the underlying Ajv instance as
+`validator.ajv`.
+
+This is useful if you need to:
+
+- add formats with [`ajv-formats`](https://www.npmjs.com/package/ajv-formats)
+- register Ajv plugins
+- define [custom keywords](https://ajv.js.org/guide/user-keywords.html)
+
+Important: `validate()` compiles the schemas you pass to it when the middleware
+is created. Configure `validator.ajv` before you call `validate()` or add the
+middleware to a route.
+
+For example, if your schema uses the `email` format, register
+`ajv-formats` first and then create the middleware:
 
 ```javascript
-import { Validator, ValidationError } from "express-json-validator-middleware";
+import { Validator } from "express-json-validator-middleware";
+import addFormats from "ajv-formats";
 
-const validator = new Validator();
+const validator = new Validator({ allErrors: true });
 
-// Ajv instance
-validator.ajv;
+addFormats(validator.ajv);
+
+const userSchema = {
+  type: "object",
+  required: ["email"],
+  properties: {
+    email: {
+      type: "string",
+      format: "email",
+    },
+  },
+};
+
+const { validate } = validator;
+
+app.post("/user", validate({ body: userSchema }), (request, response) => {
+  response.send({});
+});
 ```
 
-Ajv must be configured *before* you call `Validator.validate()` to add middleware
-(e.g. if you need to define [custom keywords](https://ajv.js.org/custom.html).
+Plugins and custom keywords follow the same pattern:
+
+```javascript
+someAjvPlugin(validator.ajv);
+
+validator.ajv.addKeyword({
+  keyword: "isEven",
+  type: "number",
+  schemaType: "boolean",
+  validate: (schema, data) => !schema || data % 2 === 0,
+});
+```
 
 ## Upgrading from v2 to v3
 
@@ -317,8 +364,8 @@ v3.x of this library uses [Ajv v8](https://www.npmjs.com/package/ajv/v/8.11.0).
 Notable changes between Ajv v6 and v8:
 
 - All formats have been moved to [ajv-formats](https://www.npmjs.com/package/ajv-formats).
-If you're using formats in your schemas, you must install this package to continue
-using them.
+If you're using formats in your schemas, you must install this package and add it
+to `validator.ajv` before calling `validate()`. See [Ajv instance](#ajv-instance).
 - The structure of validation errors has changed.
 - Support has been dropped for JSON Schema draft-04.
 
