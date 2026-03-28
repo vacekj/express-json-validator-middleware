@@ -6,7 +6,7 @@ const { spawnSync } = require("child_process");
 const repoRoot = path.resolve(__dirname, "..");
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "ejvm-types-"));
 const tarballDir = path.join(tempDir, "tarballs");
-const sourcePath = path.join(tempDir, "validation-error.ts");
+const sourcePath = path.join(tempDir, "consumer.ts");
 
 function run(command, args, options = {}) {
 	const result = spawnSync(command, args, {
@@ -28,7 +28,25 @@ try {
 	fs.writeFileSync(
 		sourcePath,
 		[
-			'import { ValidationError } from "express-json-validator-middleware";',
+			'import { ValidationError, Validator } from "express-json-validator-middleware";',
+			"",
+			"const defaultValidator = new Validator();",
+			"",
+			"defaultValidator.validate({",
+			"\tbody: {",
+			'\t\ttype: "object"',
+			"\t}",
+			"});",
+			"",
+			"const configuredValidator = new Validator({",
+			"\tallErrors: true",
+			"});",
+			"",
+			"configuredValidator.validate({",
+			"\tbody: {",
+			'\t\ttype: "object"',
+			"\t}",
+			"});",
 			"",
 			"const validationError = new ValidationError({",
 			"\tparams: [",
