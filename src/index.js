@@ -74,7 +74,7 @@ class Validator {
  */
 class ValidationError extends Error {
 	constructor(validationErrors) {
-		super();
+		super("Request validation failed");
 		this.name = "JsonSchemaValidationError";
 		this.validationErrors = validationErrors;
 	}

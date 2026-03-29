@@ -1,80 +1,127 @@
-const { test } = require("tap");
-const sget = require("simple-get").concat;
+const assert = require("node:assert/strict");
+const test = require("node:test");
 
 const express = require("express");
 
-const { Validator } = require("../src");
+const { ValidationError, Validator } = require("../src");
 
-test("Express app route using Validator#validate middleware", async t => {
+test("Express routes using Validator#validate middleware validate request bodies, params, and query strings", async t => {
 	const app = express();
 
 	app.use(express.json());
 
 	const { validate } = new Validator();
 
-	const userSchema = {
+	const addressSchema = {
 		type: "object",
-		required: ["name"],
+		required: ["street"],
 		properties: {
-			name: {
+			street: {
 				type: "string"
 			}
 		}
 	};
 
-	app.post("/user", validate({ body: userSchema }), (request, response) => {
-		response.json({ success: true });
+	const tokenSchema = {
+		type: "object",
+		required: ["token"],
+		properties: {
+			token: {
+				type: "string",
+				minLength: 36,
+				maxLength: 36
+			}
+		}
+	};
+
+	const paramsSchema = {
+		type: "object",
+		required: ["uuid"],
+		properties: {
+			uuid: {
+				type: "string",
+				minLength: 36,
+				maxLength: 36
+			}
+		}
+	};
+
+	app.post("/address/:uuid", validate({
+		body: addressSchema,
+		params: paramsSchema,
+		query: tokenSchema
+	}), (request, response) => {
+		response.json({ street: request.body.street, success: true });
 	});
 
-	app.use(function errorHandlerMiddleware(error, request, response, next) {
-		response.status(400).json(error);
+	app.use((error, request, response, next) => {
+		if (!(error instanceof ValidationError)) {
+			next(error);
+			return;
+		}
+
+		response.status(400).json({
+			name: error.name,
+			validationErrors: error.validationErrors
+		});
 	});
 
-	t.before(() => {
-		return new Promise((resolve, reject) => {
-			const httpServer = app.listen(0, () => {
-				t.context.httpServer = httpServer;
-				t.context.rootUrl = `http://127.0.0.1:${httpServer.address().port}`;
+	const httpServer = await new Promise((resolve, reject) => {
+		const server = app.listen(0, error => {
+			if (error) {
+				reject(error);
+				return;
+			}
+
+			resolve(server);
+		});
+	});
+
+	t.after(async () => {
+		await new Promise((resolve, reject) => {
+			httpServer.close(error => {
+				if (error) {
+					reject(error);
+					return;
+				}
+
 				resolve();
 			});
 		});
 	});
 
-	t.teardown(() => t.context.httpServer.close());
+	const { port } = httpServer.address();
+	const validUuid = "123e4567-e89b-12d3-a456-426614174000";
+	const validToken = "af3996d0-0e8b-4165-ae97-fdc0823be417";
+	const baseUrl = `http://127.0.0.1:${port}`;
 
-	t.test("should send an error response when request body is invalid", t => {
-		t.plan(3);
-
-		sget({
-			url: t.context.rootUrl + "/user",
-			method: "POST",
-			headers: {
-				'content-type': 'application/json'
-			},
-			body: { name: null },
-			json: true
-		}, (error, response, body) => {
-			t.error(error);
-			t.equal(response.statusCode, 400);
-			t.match(body, { name: "JsonSchemaValidationError" });
-		});
+	const invalidResponse = await fetch(`${baseUrl}/address/not-a-uuid?token=short`, {
+		method: "POST",
+		headers: {
+			"content-type": "application/json"
+		},
+		body: JSON.stringify({ street: 7 })
 	});
+	const invalidBody = await invalidResponse.json();
 
-	t.test("should send a success response when request body is valid", t => {
-		t.plan(3);
+	assert.equal(invalidResponse.status, 400);
+	assert.equal(invalidBody.name, "JsonSchemaValidationError");
+	assert.ok(Array.isArray(invalidBody.validationErrors.body));
+	assert.ok(Array.isArray(invalidBody.validationErrors.params));
+	assert.ok(Array.isArray(invalidBody.validationErrors.query));
 
-		sget({
-			url: t.context.rootUrl + "/user",
-			method: "POST",
-			headers: {
-				'content-type': 'application/json'
-			},
-			body: { name: "jake" },
-			json: true
-		}, (error, response, body) => {
-			t.error(error);
-			t.equal(response.statusCode, 200);
-			t.same(body, { success: true });
-		});
+	const validResponse = await fetch(`${baseUrl}/address/${validUuid}?token=${validToken}`, {
+		method: "POST",
+		headers: {
+			"content-type": "application/json"
+		},
+		body: JSON.stringify({ street: "Main Street" })
+	});
+	const validBody = await validResponse.json();
+
+	assert.equal(validResponse.status, 200);
+	assert.deepEqual(validBody, {
+		street: "Main Street",
+		success: true
 	});
 });

@@ -1,83 +1,112 @@
-const { test } = require("tap");
+const assert = require("node:assert/strict");
+const test = require("node:test");
 
-const { Validator, ValidationError } = require("../src");
+const { ValidationError, Validator } = require("../src");
 
-test("Validator#validate middleware configured with a schema object", async t => {
+const bodySchema = {
+	type: "object",
+	required: ["name"],
+	properties: {
+		name: {
+			type: "string"
+		}
+	}
+};
+
+test("Validator#validate middleware configured with a schema object returns ValidationError for invalid input", async () => {
+	const middleware = new Validator().validate({ body: bodySchema });
+
+	await new Promise((resolve, reject) => {
+		middleware({ body: {} }, {}, error => {
+			try {
+				assert.ok(error instanceof ValidationError);
+				assert.equal(error.name, "JsonSchemaValidationError");
+				assert.ok(Array.isArray(error.validationErrors.body));
+				resolve();
+			} catch (assertionError) {
+				reject(assertionError);
+			}
+		});
+	});
+});
+
+test("Validator#validate middleware configured with a schema object calls next() without an error for valid input", async () => {
+	const middleware = new Validator().validate({ body: bodySchema });
+
+	await new Promise((resolve, reject) => {
+		middleware({ body: { name: "Bobinsky" } }, {}, error => {
+			try {
+				assert.equal(error, undefined);
+				resolve();
+			} catch (assertionError) {
+				reject(assertionError);
+			}
+		});
+	});
+});
+
+test("Validator#validate middleware configured with a dynamic schema function validates requests", async () => {
 	const middleware = new Validator().validate({
-		body: {
+		body(request) {
+			if (request.query.requireAge === "1") {
+				return {
+					type: "object",
+					required: ["name", "age"],
+					properties: {
+						name: { type: "string" },
+						age: { type: "number" }
+					}
+				};
+			}
+
+			return bodySchema;
+		}
+	});
+
+	await new Promise((resolve, reject) => {
+		middleware({ body: { name: "Bobinsky" }, query: { requireAge: "1" } }, {}, error => {
+			try {
+				assert.ok(error instanceof ValidationError);
+				assert.ok(Array.isArray(error.validationErrors.body));
+				resolve();
+			} catch (assertionError) {
+				reject(assertionError);
+			}
+		});
+	});
+
+	await new Promise((resolve, reject) => {
+		middleware({ body: { name: "Bobinsky", age: 42 }, query: { requireAge: "1" } }, {}, error => {
+			try {
+				assert.equal(error, undefined);
+				resolve();
+			} catch (assertionError) {
+				reject(assertionError);
+			}
+		});
+	});
+});
+
+test("Validator#validate accepts custom request properties", async () => {
+	const middleware = new Validator().validate({
+		tenant: {
 			type: "object",
-			required: ["name"],
+			required: ["id"],
 			properties: {
-				name: {
-					type: "string"
-				}
+				id: { type: "string" }
 			}
 		}
 	});
 
-	t.test("should call next() with a ValidationError when there are validation errors", t => {
-		t.plan(1);
-
-		middleware(
-			{ body: {} },
-			{},
-			function next(error) {
-				t.type(error, ValidationError);
+	await new Promise((resolve, reject) => {
+		middleware({ tenant: {} }, {}, error => {
+			try {
+				assert.ok(error instanceof ValidationError);
+				assert.ok(Array.isArray(error.validationErrors.tenant));
+				resolve();
+			} catch (assertionError) {
+				reject(assertionError);
 			}
-		);
-	});
-
-	t.test("should call next() with no arguments when there are no validation errors", t => {
-		t.plan(1);
-
-		middleware(
-			{ body: { name: "Bobinsky" } },
-			{},
-			function next(error) {
-				t.type(error, undefined);
-			}
-		);
-	});
-});
-
-test("Validator#validate middleware configured with a dynamic schema function", async t => {
-	function getSchema() {
-		return {
-			type: "object",
-			properties: {
-				name: {
-					type: "string"
-				}
-			},
-			required: ["name"]
-		};
-	}
-
-	const middleware = new Validator().validate({
-		body: getSchema
-	});
-
-	t.test("should call next() with a ValidationError when there are validation errors", t => {
-		t.plan(1);
-
-		middleware(
-			{ body: {} },
-			{},
-			function next(error) {
-				t.type(error, ValidationError);
-			}
-		);
-	});
-
-	t.test("should call next() with no arguments when there are no validation errors", t => {
-		t.plan(1);
-
-		middleware(
-			{ body: { name: "Bobinsky" } },
-			{},
-			function next(error) {
-				t.type(error, undefined);
-			}
-		);
+		});
 	});
 });

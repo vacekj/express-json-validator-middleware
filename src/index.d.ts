@@ -1,32 +1,41 @@
-import { Request } from "express";
-import { RequestHandler } from "express-serve-static-core";
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from "json-schema";
-import Ajv, { ErrorObject, Options as AjvOptions } from "ajv";
+import Ajv from "ajv";
+import type { ErrorObject, Options as AjvOptions } from "ajv";
+import type { Request, RequestHandler } from "express";
+import type { JSONSchema4, JSONSchema6, JSONSchema7 } from "json-schema";
 
-type OptionKey = "body" | "params" | "query";
-
-type List<T> = {
-	[K in OptionKey]?: T;
-};
-
-type AllowedSchema =
+export type AllowedSchema =
 	| JSONSchema4
 	| JSONSchema6
 	| JSONSchema7;
 
 export type ValidateFunction =
-	| ((req: Request) => AllowedSchema)
-	| AllowedSchema;
+	| AllowedSchema
+	| ((req: Request) => AllowedSchema);
+
+export interface ValidationSchemaMap {
+	[requestProperty: string]: ValidateFunction | undefined;
+	body?: ValidateFunction;
+	params?: ValidateFunction;
+	query?: ValidateFunction;
+}
+
+export interface ValidationErrorsMap {
+	[requestProperty: string]: ErrorObject[] | null | undefined;
+	body?: ErrorObject[] | null;
+	params?: ErrorObject[] | null;
+	query?: ErrorObject[] | null;
+}
 
 export class Validator {
 	constructor(options?: AjvOptions);
 
 	ajv: Ajv;
 
-	validate(rules: List<ValidateFunction>): RequestHandler;
+	validate(rules: ValidationSchemaMap): RequestHandler;
 }
 
 export class ValidationError extends Error {
-	constructor(validationErrors: List<ErrorObject[]>);
-	public validationErrors: List<ErrorObject[]>;
+	constructor(validationErrors: ValidationErrorsMap);
+
+	validationErrors: ValidationErrorsMap;
 }

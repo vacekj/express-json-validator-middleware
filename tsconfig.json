@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": false,
+		"ignoreDeprecations": "6.0",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": ["node"],
+		"baseUrl": ".",
+		"paths": {
+			"express-json-validator-middleware": ["./src/index.d.ts"]
+		}
+	},
+	"include": ["src/index.d.ts", "test/types/**/*.ts", "types/**/*.ts"]
+}

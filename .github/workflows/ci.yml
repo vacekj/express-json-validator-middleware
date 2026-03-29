@@ -1,28 +1,100 @@
-# Based on https://github.com/actions/starter-workflows/blob/ebda693bc06206f7a6706a7c8c786b9ca5e6e4b6/ci/node.js.yml
-
-name: Node.js CI
+name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - v4
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  node-tests:
+    name: Node ${{ matrix.node-version }} tests
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version:
+          - 24.x
+          - 25.x
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm test
-    - run: npm test -- --coverage-report=text-lcov | npx codecov --pipe
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies with npm
+        run: npm install --no-package-lock
+
+      - name: Run runtime tests
+        run: npm test
+
+      - name: Run type tests
+        run: npm run test:types
+
+  npm-install-verification:
+    name: npm package verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Install dependencies with npm
+        run: npm install --no-package-lock
+
+      - name: Generate coverage
+        run: npm run test:coverage
+
+      - name: Verify npm install path
+        run: npm run test:install:npm
+
+      - name: Upload coverage artifact
+        if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-node-24
+          path: coverage
+
+  bun-install-verification:
+    name: Bun package verification
+    runs-on: ubuntu-latest
+    env:
+      BUN_TMPDIR: /tmp/bun-tmp
+      TMPDIR: /tmp
+      BUN_INSTALL_CACHE_DIR: /tmp/bun-cache
+      XDG_CACHE_HOME: /tmp/xdg-cache
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
+
+      - name: Install dependencies with Bun
+        run: bun install --frozen-lockfile
+
+      - name: Run runtime tests
+        run: bun run test
+
+      - name: Run type tests
+        run: bun run test:types
+
+      - name: Verify Bun install path
+        run: bun run test:install:bun
